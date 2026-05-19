@@ -1,0 +1,305 @@
+/* ── UNIPARK · ADMIN ───────────────────────────────────────────── */
+:root {
+  --admin:       #d97706;
+  --admin-light: #fef3c7;
+}
+
+/* ── ADMIN BADGE ───────────────────────────────────────────────── */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  background: var(--admin-light);
+  color: var(--admin);
+  border: 1px solid #fde68a;
+}
+
+.avatar-admin { background: var(--admin); color: white; }
+
+/* ── ROLE BADGES ───────────────────────────────────────────────── */
+.role-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.role-admin   { background: var(--admin-light);  color: var(--admin); }
+.role-staff   { background: var(--blue-dim);     color: var(--blue); }
+.role-student { background: var(--purple-dim);   color: var(--purple); }
+.role-visitor { background: var(--surface3);     color: var(--muted); }
+
+/* Sub badges */
+.sub-premium { background: var(--amber-dim);  color: var(--amber); }
+.sub-basic   { background: var(--blue-dim);   color: var(--blue); }
+.sub-staff   { background: var(--green-dim);  color: var(--green); }
+
+/* ── LIVE ZONE CARDS (admin overview) ──────────────────────────── */
+.live-zone-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem;
+}
+
+.live-zone-name {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.live-zone-occ {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.live-zone-occ.med  { color: var(--amber); }
+.live-zone-occ.high { color: var(--red); }
+
+.live-zone-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.live-zone-bar-wrap {
+  margin-top: 10px;
+  height: 6px;
+  background: var(--surface3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.live-zone-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width .4s;
+}
+
+/* ── CHARTS ────────────────────────────────────────────────────── */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.analytics-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+@media (max-width:800px) {
+  .analytics-grid,
+  .analytics-grid-3 { grid-template-columns: 1fr; }
+}
+
+.chart-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem;
+}
+
+.chart-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.chart-wrap { position: relative; }
+
+/* ── TREND CHART (SVG canvas) ──────────────────────────────────── */
+.trend-canvas {
+  width: 100%;
+  height: 120px;
+  display: block;
+}
+
+/* ── ZONE UTILISATION BARS ─────────────────────────────────────── */
+.zone-util-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.zone-util-row:last-child { border-bottom: none; }
+
+.zone-util-name {
+  width: 90px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zone-util-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--surface3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.zone-util-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--blue);
+  transition: width .5s;
+}
+
+.zone-util-bar.med  { background: var(--amber); }
+.zone-util-bar.high { background: var(--red); }
+
+.zone-util-pct {
+  width: 38px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ── PEAK HOUR BARS ────────────────────────────────────────────── */
+.peak-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100px;
+}
+
+.peak-bar-wrap {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.peak-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--blue-dim);
+  border: 1px solid var(--blue);
+  min-height: 3px;
+  transition: height .4s;
+}
+
+.peak-bar.peak { background: var(--blue); }
+
+.peak-bar-label {
+  font-size: 8px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ── HEATMAP ───────────────────────────────────────────────────── */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(12, 1fr);
+  gap: 3px;
+}
+
+.heatmap-cell {
+  height: 26px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+}
+
+.heatmap-label {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  padding-right: 4px;
+}
+
+.heatmap-col-label {
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 2px 0 6px;
+}
+
+/* ── QUICK STATS (admin analytics) ────────────────────────────── */
+.quick-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.quick-stat-row:last-child { border-bottom: none; }
+.quick-stat-row span:first-child { color: var(--muted); }
+
+/* ── SEARCH BAR ────────────────────────────────────────────────── */
+.search-input {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-size: 13px;
+  width: 220px;
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26,111,245,.12);
+}
+
+/* ── ADMIN SPOT GRID ───────────────────────────────────────────── */
+.admin-grid-wrap {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.spot-status-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--admin);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* ── BOOKING STATUS BADGES ─────────────────────────────────────── */
+.status-confirmed { background: var(--green-dim);  color: var(--green); }
+.status-cancelled { background: var(--red-dim);    color: var(--red); }
+.status-pending   { background: var(--amber-dim);  color: var(--amber); }
+.status-expired   { background: var(--surface3);   color: var(--muted); }
+
+/* shared pill style reused for table cells */
+.status-pill {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}

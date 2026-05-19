@@ -1,0 +1,572 @@
+/* ── UNIPARK · DASHBOARD ───────────────────────────────────────── */
+
+/* ── AVATAR COLOURS ────────────────────────────────────────────── */
+.avatar-green { background: var(--green); color: white; }
+.avatar-blue  { background: var(--blue);  color: white; }
+
+/* ── ZONE CARDS ────────────────────────────────────────────────── */
+.zones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.zone-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem;
+  cursor: pointer;
+  transition: border-color .18s, box-shadow .18s, transform .18s;
+}
+
+.zone-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 4px 16px rgba(26,111,245,.12);
+  transform: translateY(-2px);
+}
+
+.zone-name {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.zone-avail {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.zone-avail.low  { color: var(--amber); }
+.zone-avail.full { color: var(--red); }
+
+.zone-total { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.zone-bar-wrap {
+  margin-top: 10px;
+  height: 5px;
+  background: var(--surface3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.zone-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--blue);
+  transition: width .4s;
+}
+
+.zone-bar.med  { background: var(--amber); }
+.zone-bar.high { background: var(--red); }
+
+/* ── RECOMMENDATIONS ───────────────────────────────────────────── */
+.rec-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: .75rem 1rem;
+}
+
+.rec-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.rec-item:last-child { border-bottom: none; }
+
+.rec-rank {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.rec-rank.rank-2 { background: var(--surface3); color: var(--muted); }
+.rec-rank.rank-3 { background: var(--surface3); color: var(--muted); }
+
+.rec-info { flex: 1; }
+.rec-zone { font-size: 13px; font-weight: 700; }
+.rec-reason, .rec-walk { font-size: 11px; color: var(--muted); }
+
+.rec-prob {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+/* ── PARKING LOT ───────────────────────────────────────────────── */
+.zone-switcher {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.zone-btn {
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: background .15s, color .15s, border-color .15s;
+}
+
+.zone-btn:hover  { border-color: var(--blue); color: var(--blue); }
+.zone-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+.lot-wrap {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.spots-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.drive-lane {
+  margin: 10px 0;
+  padding: 6px 8px;
+  background: var(--surface3);
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-radius: 6px;
+}
+
+/* ── PARKING SPOTS ─────────────────────────────────────────────── */
+.spot {
+  width: 76px;
+  height: 96px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: var(--surface3);
+  transition: transform .15s, box-shadow .15s;
+}
+
+.spot.available {
+  background: var(--blue-dim);
+  border-color: var(--blue);
+  cursor: pointer;
+}
+
+.spot.available:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(26,111,245,.25);
+}
+
+.spot.occupied {
+  background: var(--red-dim);
+  border-color: var(--red);
+  opacity: .65;
+}
+
+.spot.mine {
+  background: var(--green-dim);
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(22,163,74,.2);
+}
+
+.spot.closed {
+  background: var(--amber-dim);
+  border-color: var(--amber);
+  opacity: .7;
+}
+
+.spot-id    { font-size: 14px; font-weight: 800; }
+.spot-icon  { font-size: 18px; line-height: 1; }
+.spot-type  { font-size: 9px; color: var(--muted); text-align: center; font-weight: 600; }
+.spot-price { font-size: 9px; color: var(--muted); }
+
+/* ── LEGEND ────────────────────────────────────────────────────── */
+.lot-legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.legend-dot.available { background: var(--blue-dim);   border: 2px solid var(--blue); }
+.legend-dot.occupied  { background: var(--red-dim);    border: 2px solid var(--red); }
+.legend-dot.mine      { background: var(--green-dim);  border: 2px solid var(--green); }
+.legend-dot.closed    { background: var(--amber-dim);  border: 2px solid var(--amber); }
+
+/* ── FILTER BAR ────────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  border-radius: 999px;
+  padding: 5px 13px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: background .15s, color .15s, border-color .15s;
+}
+
+.filter-chip:hover  { border-color: var(--blue); color: var(--blue); }
+.filter-chip.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+/* ── PREDICTIONS ───────────────────────────────────────────────── */
+.prediction-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
+  gap: .75rem;
+}
+
+.predict-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.predict-hour {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.predict-prob {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.predict-prob.med  { color: var(--amber); }
+.predict-prob.low  { color: var(--red); }
+
+.predict-label {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.predict-free {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 6px;
+}
+
+/* ── BOOKING MODAL ─────────────────────────────────────────────── */
+.spot-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.spot-preview-icon { font-size: 28px; }
+.spot-preview-id   { font-size: 22px; font-weight: 800; color: var(--blue); }
+.spot-preview-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.price-breakdown {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.pb-label { color: var(--muted); }
+
+.pb-row.total {
+  border-top: 1.5px solid var(--border);
+  margin-top: 8px;
+  padding-top: 10px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ── PAYMENT ───────────────────────────────────────────────────── */
+.pay-section  { margin-bottom: .75rem; }
+.pay-label    { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+
+.pay-methods {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pay-opt {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 9px 8px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: border-color .15s, color .15s, background .15s;
+}
+
+.pay-opt:hover  { border-color: var(--blue); }
+.pay-opt.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+.pay-opt-icon { display: block; font-size: 18px; margin-bottom: 3px; }
+
+.card-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ── MY BOOKINGS LIST ──────────────────────────────────────────── */
+.booking-item {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 10px;
+  transition: box-shadow .15s;
+}
+
+.booking-item:hover { box-shadow: 0 3px 10px rgba(15,30,80,.08); }
+
+.booking-left, .booking-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.booking-spot-pill {
+  background: var(--blue-dim);
+  color: var(--blue);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.booking-info { flex: 1; }
+.booking-ref  { font-size: 11px; font-weight: 700; color: var(--muted); }
+.booking-time { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+.booking-total {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.booking-status {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status-active   { background: var(--green-dim);  color: var(--green); }
+.status-expired  { background: var(--surface3);   color: var(--muted); }
+.status-upcoming { background: var(--blue-dim);   color: var(--blue); }
+
+.bookings-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--muted);
+  border: 1.5px dashed var(--border);
+  border-radius: 16px;
+}
+
+.bookings-empty-icon  { font-size: 36px; margin-bottom: 10px; }
+.bookings-empty-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+
+/* ── ZONE TAGS ─────────────────────────────────────────────────── */
+.zone-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.zone-card.recommended {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(26,111,245,.15);
+}
+
+/* ── LOT ROW LABELS ────────────────────────────────────────────── */
+.lot-row-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  margin: 10px 0 6px;
+}
+
+.drive-lane-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── BOOKING TYPE LINE ─────────────────────────────────────────── */
+.booking-type {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── PREDICTION CARDS ──────────────────────────────────────────── */
+.predict-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem;
+}
+
+.predict-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.predict-hours {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 52px;
+  margin-bottom: 4px;
+}
+
+.hour-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  min-height: 3px;
+  transition: height .4s;
+}
+
+.predict-labels {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.predict-label {
+  flex: 1;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.predict-prob {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.predict-prob-name { color: var(--muted); font-weight: 600; }
+.predict-prob-val  { font-weight: 800; }
+
+/* ── SUCCESS MODAL ─────────────────────────────────────────────── */
+.success-modal {
+  max-width: 360px;
+  text-align: center;
+}
+
+.success-icon  { font-size: 52px; margin-bottom: 8px; }
+.success-title { font-size: 20px; font-weight: 800; color: var(--blue); }
+
+.success-sub, .success-detail {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 6px 0;
+}
+
+.success-ref {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 16px;
+  color: var(--blue);
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Mono', monospace;
+  font-size: 13px;
+  margin: 8px 0;
+}

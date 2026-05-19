@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UniPark — Sign in</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+<div class="auth-wrapper">
+
+  <div class="auth-logo-wrap">
+    <div class="logo"><div class="logo-mark">🅿</div> UniPark</div>
+   
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Sign in</button>
+      <button class="auth-tab" data-tab="register">Register</button>
+    </div>
+
+    <div id="auth-error" class="error-msg hidden"></div>
+
+    <!-- login page -->
+    <div id="form-login" class="auth-form active">
+      <div class="form-group">
+        <label class="form-label">Email address</label>
+        <input class="form-input" type="email" id="login-email" placeholder="you@unipark.edu.au" value="demo@unipark.edu.au" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="login-password" placeholder="••••••••" value="password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-full btn-lg" id="btn-login">Sign in</button>
+      <div class="demo-hint">
+        Student demo: <strong>demo@unipark.edu.au</strong> / <strong>password</strong><br>
+        Admin demo: <strong>admin@unipark.edu.au</strong> / <strong>admin123</strong>
+      </div>
+    </div>
+
+    <!-- register page -->
+    <div id="form-register" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Full name</label>
+        <input class="form-input" type="text" id="reg-name" placeholder="Jane Smith" autocomplete="name">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="you@unipark.edu.au" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="reg-password" placeholder="Min. 6 chars" autocomplete="new-password">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Vehicle plate</label>
+          <input class="form-input" type="text" id="reg-plate" placeholder="ABC 123">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select class="form-input form-select" id="reg-role">
+            <option value="student">Student</option>
+            <option value="staff">Staff</option>
+            <option value="visitor">Visitor</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subscription plan</label>
+        <div class="sub-options">
+          <div class="sub-option active" data-sub="basic">
+            <div class="sub-option-icon">🎫</div>
+            <div class="sub-option-label">Basic</div>
+          </div>
+          <div class="sub-option" data-sub="premium">
+            <div class="sub-option-icon">⭐</div>
+            <div class="sub-option-label">Premium</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full btn-lg" id="btn-register">Create account</button>
+    </div>
+  </div>
+
+  
+</div>
+<div id="toast"></div>
+<script src="js/store.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

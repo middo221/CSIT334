@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UniPark — Admin</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo"><div class="logo-mark" style="background:var(--admin)">🅿</div> UniPark</div>
+  <div class="admin-badge">⚙ Admin</div>
+  <nav class="header-nav">
+    <button class="nav-link active" data-panel="overview">📊 Overview</button>
+    <button class="nav-link" data-panel="analytics">📈 Analytics</button>
+    <button class="nav-link" data-panel="bookings">📋 Bookings</button>
+    <button class="nav-link" data-panel="users">👥 Users</button>
+    <button class="nav-link" data-panel="spots">🅿️ Spots</button>
+  </nav>
+  <div class="header-right">
+    <div class="user-pill">
+      <div class="avatar avatar-admin" id="admin-avatar">AD</div>
+      <span id="admin-name">Admin</span>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="btn-logout">Sign out</button>
+  </div>
+</header>
+
+<main class="app-main">
+
+  <!-- STATS -->
+  <div class="stats-grid stats-grid-5">
+    <div class="stat-card"><div class="stat-label">Total Bookings</div><div class="stat-value text-amber" id="stat-bookings">—</div><div class="stat-sub">all time</div><div class="stat-accent">📋</div></div>
+    <div class="stat-card"><div class="stat-label">Registered Users</div><div class="stat-value text-blue" id="stat-users">—</div><div class="stat-sub">accounts</div><div class="stat-accent">👥</div></div>
+    <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value text-green" id="stat-revenue">—</div><div class="stat-sub">all time</div><div class="stat-accent">💰</div></div>
+    <div class="stat-card"><div class="stat-label">Active Now</div><div class="stat-value text-green" id="stat-active">—</div><div class="stat-sub">live bookings</div><div class="stat-accent">🟢</div></div>
+    <div class="stat-card"><div class="stat-label">Total Spots</div><div class="stat-value" id="stat-spots">—</div><div class="stat-sub">across all zones</div><div class="stat-accent">🅿️</div></div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel" id="panel-overview">
+    <div class="section-head">
+      <div class="section-title">Live zone occupancy</div>
+      <div class="live-badge"><span class="live-dot"></span> Real-time · updates every 8s</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.75rem" id="live-zones"></div>
+
+    <div class="section-head"><div class="section-title">Recent bookings</div>
+      <button class="btn btn-ghost btn-sm" onclick="switchPanel('bookings')">View all →</button>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Ref</th><th>Spot</th><th>User</th><th>Time</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody id="bookings-tbody"><tr><td colspan="6" class="table-empty">Loading…</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="panel hidden" id="panel-analytics">
+    <div class="analytics-grid">
+      <div class="chart-card">
+        <div class="chart-title">14-day occupancy trend (avg across all zones)</div>
+        <div id="trend-chart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Zone utilisation (historical average)</div>
+        <div id="zone-util"></div>
+      </div>
+    </div>
+    <div class="analytics-grid analytics-grid-3">
+      <div class="chart-card" style="grid-column:span 2">
+        <div class="chart-title">Peak hour analysis (avg occupancy by hour)</div>
+        <div class="chart-wrap" style="height:110px">
+          <div class="peak-bars" id="peak-chart"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Quick stats</div>
+        <div id="quick-stats" style="padding-top:.25rem">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Busiest zone</span><span class="mono" style="font-size:12px">Zone A</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Peak hour</span><span class="mono" style="font-size:12px">9:00 am</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Avg daily bookings</span><span class="mono" style="font-size:12px">~11</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px"><span style="color:var(--muted)">EV spots</span><span class="mono" style="font-size:12px">8 total</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Occupancy heatmap (zone × hour, 14-day average)</div>
+      <div id="heatmap" style="overflow-x:auto;padding-top:.5rem"></div>
+    </div>
+  </div>
+
+  <!-- ALL BOOKINGS -->
+  <div class="panel hidden" id="panel-bookings">
+    <div class="section-head">
+      <div class="section-title">All bookings</div>
+      <input class="search-input" type="text" id="booking-search" placeholder="Search spot, user, ref…">
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Ref</th><th>Spot</th><th>User</th><th>Time</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody id="bookings-tbody"><tr><td colspan="6" class="table-empty">Loading…</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="panel hidden" id="panel-users">
+    <div class="section-head">
+      <div class="section-title">User accounts</div>
+      <input class="search-input" type="text" id="user-search" placeholder="Search name, email, plate…">
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>User</th><th>Plate</th><th>Role</th><th>Subscription</th><th>Bookings</th><th>Spent</th></tr></thead>
+      <tbody id="users-tbody"><tr><td colspan="6" class="table-empty">Loading…</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- MANAGE SPOTS -->
+  <div class="panel hidden" id="panel-spots">
+    <div class="section-head">
+      <div class="section-title">Manage parking spots</div>
+      <span style="font-size:12px;color:var(--muted)">Click available or closed spots to toggle status</span>
+    </div>
+    <div class="lot-legend">
+      <div class="legend-item"><div class="legend-dot available"></div> Available</div>
+      <div class="legend-item"><div class="legend-dot occupied"></div> Occupied</div>
+      <div class="legend-item"><div class="legend-dot closed"></div> Closed by admin</div>
+    </div>
+    <div class="zone-switcher" id="spot-zone-tabs" style="margin-bottom:1.25rem;flex-wrap:wrap"></div>
+    <div class="admin-grid-wrap"><div id="admin-spot-grid"></div></div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+<script src="js/store.js"></script>
+<script src="js/admin.js"></script>
+<script>
+function switchPanel(name){
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('panel-'+name).classList.remove('hidden');
+  // trigger render
+  const evt=new MouseEvent('click');
+  document.querySelector(`[data-panel="${name}"]`).dispatchEvent(evt);
+}
+</script>
+</body>
+</html>
