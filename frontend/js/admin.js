@@ -180,10 +180,16 @@ document.addEventListener('DOMContentLoaded',()=>{
       b.userEmail.toLowerCase().includes(bSearch)||
       b.id.toLowerCase().includes(bSearch)
     );
-    const tbody=document.getElementById('bookings-tbody');
-    if(!filtered.length){ tbody.innerHTML=`<tr><td colspan="6" class="table-empty">No bookings found.</td></tr>`; return; }
+    const tbody = document.getElementById('bookings-tbody');
+    const recentTbody = document.getElementById('recent-bookings-tbody');
+    if(!filtered.length){
+        const empty = `<tr><td colspan="6" class="table-empty">No bookings found.</td></tr>`;
+        tbody.innerHTML = empty;
+        if (recentTbody) recentTbody.innerHTML = empty;
+        return;
+    }
     const now=new Date().toISOString();
-    tbody.innerHTML=filtered.map(b=>{
+    const rows = filtered.map(b=>{
       const spot=UniPark.getSpot(b.spotId);
       const u=UniPark.getUsers().find(x=>x.email===b.userEmail);
       const expired=b.expired||b.end<=now;
@@ -198,6 +204,20 @@ document.addEventListener('DOMContentLoaded',()=>{
           ${!expired?`<button class="btn btn-sm btn-danger" style="margin-left:6px" data-cancel="${b.id}">Cancel</button>`:''}
         </td>
       </tr>`;
+    }).join('');
+    tbody.innerHTML = rows;
+    if (recentTbody) recentTbody.innerHTML = filtered.slice(0,5).map(b=>{
+        const spot=UniPark.getSpot(b.spotId);
+        const u=UniPark.getUsers().find(x=>x.email===b.userEmail);
+        const expired=b.expired||b.end<=new Date().toISOString();
+        return `<tr>
+            <td><span class="badge badge-blue mono">#UP-${b.id}</span></td>
+            <td><div style="font-weight:600">${b.spotId}</div><div style="font-size:11px;color:var(--muted)">${spot?.type} · Zone ${spot?.zone}</div></td>
+            <td><div style="font-weight:500">${u?.name||b.userEmail}</div><div style="font-size:11px;color:var(--muted)">${b.userEmail}</div></td>
+            <td style="font-family:var(--font-mono);font-size:11px">${UniPark.fmtDate(b.start)}<br><span style="color:var(--muted)">→ ${UniPark.fmtDate(b.end)}</span></td>
+            <td style="color:var(--green);font-family:var(--font-display);font-weight:800;font-size:15px">$${b.total.toFixed(2)}</td>
+            <td><span class="badge ${expired?'badge-red':'badge-green'}">${expired?'Expired':'Active'}</span></td>
+          </tr>`;
     }).join('');
     tbody.querySelectorAll('[data-cancel]').forEach(btn=>{
       btn.addEventListener('click',()=>{
