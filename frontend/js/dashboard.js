@@ -174,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const spot = UniPark.getSpot(el.dataset.spot);
         const st   = UniPark.spotStatus(spot.id, user.email);
         if (st === 'mine') {
-          // Already booked — just show the reference number
           const b = UniPark.myBookings(user.email).find(b => b.spotId===spot.id && !b.expired);
           UniPark.toast(`📋 Already booked — Ref #UP-${b?.id}`);
           return;
@@ -282,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function openBookingModal(spot) {
     selectedSpot = spot;
     document.getElementById('modal-spot-subtitle').textContent = `Spot ${spot.id} · ${spot.type}`;
-    document.getElementById('preview-icon').textContent        = '';
     document.getElementById('preview-id').textContent          = spot.id;
     document.getElementById('preview-meta').textContent        = `Zone ${spot.zone} · ${spot.type} · $${spot.price}/hr`;
 
@@ -343,24 +341,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const e = document.getElementById('book-end').value;
     if (!s || !e) return UniPark.toast('⚠️ Please choose start and end times.');
     if (new Date(e) <= new Date(s)) return UniPark.toast('⚠️ End time must be after start time.');
-    if (selectedPay === 'card') {
-      const num = document.getElementById('card-number').value.replace(/\s/g,'');
-      if (num.length < 12) return UniPark.toast('⚠️ Please enter a valid card number.');
-    }
 
     const hrs   = (new Date(e) - new Date(s)) / 3600000;
     const total = +(hrs * selectedSpot.price).toFixed(2);
     const id    = UniPark.randId();
 
-    UniPark.addBooking({
+    const result = UniPark.addBooking({
       id, spotId: selectedSpot.id, zone: selectedSpot.zone,
       userEmail: user.email, userId: user.id,
-      start: s, end: e, total, payMethod: selectedPay,
+      start: new Date(s).toISOString(), end: new Date(e).toISOString(),
+      total, payMethod: selectedPay,
       createdAt: new Date().toISOString(),
     });
 
+    if (!result.ok) return UniPark.toast('⚠️ ' + (result.error || 'Booking failed. Please try again.'));
+
     closeModal('modal-booking');
-    document.getElementById('success-ref').textContent    = `REF: #UP-${id}`;
+    document.getElementById('success-ref').textContent    = `REF: #UP-${result.booking?.id || id}`;
     document.getElementById('success-detail').textContent =
       `${selectedSpot.id} · ${UniPark.fmtDate(s)} → ${UniPark.fmtDate(e)} · $${total.toFixed(2)} paid`;
     openModal('modal-success');
