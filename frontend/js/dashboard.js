@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
           <div class="spot ${st}" data-spot="${s.id}" ${clickable ? '' : 'tabindex="-1"'}>
             <span class="spot-id">${s.id}</span>
-            <span class="spot-icon">${s.icon}</span>
+
             <span class="spot-type">${s.type}</span>
             <span class="spot-price">$${s.price}/hr</span>
           </div>`;
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openBookingModal(spot) {
     selectedSpot = spot;
     document.getElementById('modal-spot-subtitle').textContent = `Spot ${spot.id} · ${spot.type}`;
-    document.getElementById('preview-icon').textContent        = spot.icon;
+    document.getElementById('preview-icon').textContent        = '';
     document.getElementById('preview-id').textContent          = spot.id;
     document.getElementById('preview-meta').textContent        = `Zone ${spot.zone} · ${spot.type} · $${spot.price}/hr`;
 
