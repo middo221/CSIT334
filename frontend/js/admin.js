@@ -65,6 +65,28 @@ document.addEventListener('DOMContentLoaded',()=>{
     renderPeakBars();
     renderHeatmap();
     renderZoneUtil();
+    renderQuickStats();
+  }
+
+  function renderQuickStats(){
+    // Busiest zone — highest historical average utilisation
+    const zoneUtil = UniPark.getZoneUtilisation();
+    const busiest = zoneUtil.reduce((a,b) => a.utilPct > b.utilPct ? a : b, zoneUtil[0]);
+    document.getElementById('qs-busiest-zone').textContent = busiest ? 'Zone ' + busiest.id : '—';
+
+    // Peak hour — hour with highest average occupancy
+    const peak = UniPark.getPeakHours();
+    const peakHour = peak.reduce((a,b) => a.avg > b.avg ? a : b);
+    const h = peakHour.hour;
+    const peakLabel = h === 0 ? '12:00 am' : h < 12 ? h + ':00 am' : h === 12 ? '12:00 pm' : (h-12) + ':00 pm';
+    document.getElementById('qs-peak-hour').textContent = peakLabel;
+
+    // Avg daily bookings — real bookings spread across unique history days
+    const history = UniPark.getHistory();
+    const uniqueDays = new Set(history.map(r => r.ts.slice(0,10))).size || 1;
+    const realBookings = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
+    const avg = Math.round(realBookings.length / uniqueDays);
+    document.getElementById('qs-avg-bookings').textContent = '~' + avg;
   }
 
   // Trend line (SVG)

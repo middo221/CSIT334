@@ -76,12 +76,11 @@
         </div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Quick stats</div>
+        <div class="chart-title">Stats</div>
         <div id="quick-stats" style="padding-top:.25rem">
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Busiest zone</span><span class="mono" style="font-size:12px">Zone A</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Peak hour</span><span class="mono" style="font-size:12px">9:00 am</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Avg daily bookings</span><span class="mono" style="font-size:12px">~11</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px"><span style="color:var(--muted)">EV spots</span><span class="mono" style="font-size:12px">8 total</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Busiest zone</span><span class="mono" style="font-size:12px" id="qs-busiest-zone">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Peak hour</span><span class="mono" style="font-size:12px" id="qs-peak-hour">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Avg daily bookings</span><span class="mono" style="font-size:12px" id="qs-avg-bookings">—</span></div>
         </div>
       </div>
     </div>
@@ -119,7 +118,7 @@
   <div class="panel hidden" id="panel-spots">
     <div class="section-head">
       <div class="section-title">Manage parking spots</div>
-      <span style="font-size:12px;color:var(--muted)">Click available or closed spots to toggle status</span>
+      <span style="font-size:12px;color:var(--muted)"></span>
     </div>
     <div class="lot-legend">
       <div class="legend-item"><div class="legend-dot available"></div> Available</div>
