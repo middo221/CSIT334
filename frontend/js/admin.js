@@ -309,7 +309,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         const st=closed?'closed': (booked||simOcc)?'occupied':'available';
         return `<div class="spot ${st}" data-spot="${s.id}" title="${closed?'Click to reopen':(booked||simOcc)?'Currently occupied':'Click to close'}">
           <span class="spot-id">${s.id}</span>
-          <span class="spot-icon">${s.icon}</span>
           <span class="spot-type">${s.type}</span>
           ${closed?'<span style="font-size:8px;font-weight:700;color:var(--amber);text-transform:uppercase;font-family:var(--font-mono)">CLOSED</span>':`<span class="spot-price">$${s.price}/hr</span>`}
         </div>`;
