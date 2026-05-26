@@ -26,7 +26,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // ── LIVE SIM ──────────────────────────────────────────────────────────────
   UniPark.startSimulation();
-  UniPark.onSimUpdate(()=>{ renderStats(); renderLiveGrid(); });
+  UniPark.onSimUpdate(()=>{
+    renderStats();
+    renderLiveGrid();
+    if(!document.getElementById('panel-analytics').classList.contains('hidden')) renderAnalytics();
+  });
 
   // ── STATS ─────────────────────────────────────────────────────────────────
   function renderStats(){

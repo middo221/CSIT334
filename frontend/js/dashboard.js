@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── STATE ─────────────────────────────────────────────────────────────────
-  const ZONE_ID     = UniPark.ZONES[0].id; // 'A' — only one zone
+  let activeZone    = UniPark.ZONES[0].id; // currently selected zone (default: A)
   let activeFilter  = 'all';               // current filter chip selection
   let selectedSpot  = null;                // spot the booking modal is open for
   let selectedPay   = 'card';              // selected payment method
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const fillColor  = z.pct > 80 ? 'var(--red)' : z.pct > 55 ? 'var(--amber)' : 'var(--green)';
 
       return `
-        <div class="zone-card${recIds[0]===z.id ? ' recommended' : ''}" onclick="goToFind()">
+        <div class="zone-card${recIds[0]===z.id ? ' recommended' : ''}" onclick="goToFind('${z.id}')">
           <div class="zone-name">${z.name}</div>
           <div class="zone-avail ${availClass}">${z.available}</div>
           <div class="zone-total">of ${z.spots} available · ${z.walk} walk</div>
@@ -100,12 +100,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
+  // ── ZONE SWITCHER ─────────────────────────────────────────────────────────
+  // Renders the zone tab buttons above the parking grid
+  function renderZoneSwitcher() {
+    const wrap = document.getElementById('zone-switcher');
+    wrap.innerHTML = UniPark.ZONES.map(z =>
+      `<button class="zone-btn${z.id === activeZone ? ' active' : ''}" data-zone="${z.id}">${z.id} – ${z.name.split('–')[1]?.trim() || z.name}</button>`
+    ).join('');
+    wrap.querySelectorAll('.zone-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeZone = btn.dataset.zone;
+        activeFilter = 'all';
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-filter="all"]').classList.add('active');
+        renderZoneSwitcher();
+        renderGrid();
+      });
+    });
+  }
+
   // Clicking the zone card takes the user straight to the Find a Spot tab
-  window.goToFind = function () {
+  window.goToFind = function (zoneId) {
+    if (zoneId) activeZone = zoneId;
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     document.querySelector('[data-panel="find"]').classList.add('active');
     document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
     document.getElementById('panel-find').classList.remove('hidden');
+    renderZoneSwitcher();
     renderGrid();
   };
 
@@ -135,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Renders the visual parking lot in the Find a Spot tab
   function renderGrid() {
     // Get all spots, then apply the active filter chip
-    let spots = UniPark.zoneSpots(ZONE_ID);
+    let spots = UniPark.zoneSpots(activeZone);
     if (activeFilter === 'available')
       spots = spots.filter(s => UniPark.spotStatus(s.id, user.email) === 'available');
     else if (activeFilter !== 'all')
@@ -404,6 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStats();
     renderZoneCards();
     renderRecommendations();
+    renderZoneSwitcher();
     renderGrid();
   }
 
