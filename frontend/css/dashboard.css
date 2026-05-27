@@ -1,10 +1,9 @@
-/* ── UNIPARK · DASHBOARD ───────────────────────────────────────── */
+/* dashboard styles */
 
-/* ── AVATAR COLOURS ────────────────────────────────────────────── */
 .avatar-green { background: var(--green); color: white; }
 .avatar-blue  { background: var(--blue);  color: white; }
 
-/* ── ZONE CARDS ────────────────────────────────────────────────── */
+/* zone cards */
 .zones-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
@@ -64,7 +63,7 @@
 .zone-bar.med  { background: var(--amber); }
 .zone-bar.high { background: var(--red); }
 
-/* ── RECOMMENDATIONS ───────────────────────────────────────────── */
+/* recommendations */
 .rec-card {
   background: var(--surface2);
   border: 1.5px solid var(--border);
@@ -109,7 +108,7 @@
   color: var(--blue);
 }
 
-/* ── PARKING LOT ───────────────────────────────────────────────── */
+/* parking lot grid */
 .zone-switcher {
   display: flex;
   gap: 6px;
@@ -159,7 +158,7 @@
   border-radius: 6px;
 }
 
-/* ── PARKING SPOTS ─────────────────────────────────────────────── */
+/* individual spot blocks  */
 .spot {
   width: 76px;
   height: 96px;
@@ -208,7 +207,7 @@
 .spot-type  { font-size: 9px; color: var(--muted); text-align: center; font-weight: 600; }
 .spot-price { font-size: 9px; color: var(--muted); }
 
-/* ── LEGEND ────────────────────────────────────────────────────── */
+/* legend */
 .lot-legend {
   display: flex;
   gap: 1rem;
@@ -240,7 +239,7 @@
 .legend-dot.mine      { background: var(--green-dim);  border: 2px solid var(--green); }
 .legend-dot.closed    { background: var(--amber-dim);  border: 2px solid var(--amber); }
 
-/* ── FILTER BAR ────────────────────────────────────────────────── */
+/* filter chips */
 .filter-bar {
   display: flex;
   gap: 6px;
@@ -262,7 +261,7 @@
 .filter-chip:hover  { border-color: var(--blue); color: var(--blue); }
 .filter-chip.active { background: var(--blue); border-color: var(--blue); color: white; }
 
-/* ── PREDICTIONS ───────────────────────────────────────────────── */
+/* prediction cards */
 .prediction-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
@@ -307,7 +306,7 @@
   margin-top: 6px;
 }
 
-/* ── BOOKING MODAL ─────────────────────────────────────────────── */
+/* booking modal */
 .spot-preview {
   display: flex;
   align-items: center;
@@ -349,7 +348,7 @@
   font-size: 15px;
 }
 
-/* ── PAYMENT ───────────────────────────────────────────────────── */
+/* payment method selector */
 .pay-section  { margin-bottom: .75rem; }
 .pay-label    { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
 
@@ -384,7 +383,7 @@
   gap: 10px;
 }
 
-/* ── MY BOOKINGS LIST ──────────────────────────────────────────── */
+/* bookings list */
 .booking-item {
   background: var(--surface2);
   border: 1.5px solid var(--border);
@@ -437,6 +436,7 @@
 .status-expired  { background: var(--surface3);   color: var(--muted); }
 .status-upcoming { background: var(--blue-dim);   color: var(--blue); }
 
+/* empty state when no bookings */
 .bookings-empty {
   text-align: center;
   padding: 3rem 2rem;
@@ -448,7 +448,6 @@
 .bookings-empty-icon  { font-size: 36px; margin-bottom: 10px; }
 .bookings-empty-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
 
-/* ── ZONE TAGS ─────────────────────────────────────────────────── */
 .zone-tags {
   display: flex;
   flex-wrap: wrap;
@@ -460,7 +459,6 @@
   box-shadow: 0 0 0 2px rgba(79,70,229,.15);
 }
 
-/* ── LOT ROW LABELS ────────────────────────────────────────────── */
 .lot-row-label {
   font-size: 10px;
   font-weight: 700;
@@ -478,7 +476,6 @@
   color: var(--muted);
 }
 
-/* ── BOOKING TYPE LINE ─────────────────────────────────────────── */
 .booking-type {
   font-size: 13px;
   font-weight: 600;
@@ -488,7 +485,7 @@
   gap: 4px;
 }
 
-/* ── PREDICTION CARDS ──────────────────────────────────────────── */
+/* predict-card overide for the bar chart variant */
 .predict-card {
   background: var(--surface2);
   border: 1.5px solid var(--border);
@@ -543,7 +540,7 @@
 .predict-prob-name { color: var(--muted); font-weight: 600; }
 .predict-prob-val  { font-weight: 800; }
 
-/* ── SUCCESS MODAL ─────────────────────────────────────────────── */
+/* success modal */
 .success-modal {
   max-width: 360px;
   text-align: center;

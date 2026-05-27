@@ -1,6 +1,5 @@
-/* ── UNIPARK · BASE STYLES ─────────────────────────────────────── */
+/* base styles - shared across all pages */
 :root {
-  /* Core palette */
   --blue:       #4f46e5;
   --blue-dark:  #3730a3;
   --blue-dim:   #e0e7ff;
@@ -18,29 +17,25 @@
   --purple:     #7c3aed;
   --purple-dim: #ede9fe;
 
-  /* Surfaces */
+  /* surfaces */
   --bg:       #f4f2f9;
   --white:    #ffffff;
   --surface:  #ffffff;
   --surface2: #ede9f6;
   --surface3: #e2ddf0;
 
-  /* Text */
+  /* text */
   --text:   #1c1545;
   --muted:  #6b62a0;
 
-  /* Border */
   --border: #d0cae8;
-
-  /* Radius */
   --radius: 10px;
 
-  /* Shadow */
   --shadow-sm: 0 1px 3px rgba(28,20,80,.07);
   --shadow:    0 4px 16px rgba(28,20,80,.10);
 }
 
-/* ── RESET / BASE ──────────────────────────────────────────────── */
+/* reset */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -50,7 +45,6 @@ body {
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -63,7 +57,7 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(79,70,229,.15);
 }
 
-/* ── BUTTONS ───────────────────────────────────────────────────── */
+/* buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -110,7 +104,7 @@ input:focus, select:focus, textarea:focus {
 .btn-lg  { padding: 13px 20px; font-size: 15px; }
 .btn-full { width: 100%; }
 
-/* ── FORMS ─────────────────────────────────────────────────────── */
+/* forms */
 .form-group { margin-bottom: 1rem; }
 
 .form-label {
@@ -133,6 +127,7 @@ input:focus, select:focus, textarea:focus {
   transition: border-color .15s, box-shadow .15s;
 }
 
+/* custom arrow for selects, cant use default browser one */
 .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235f759e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
 
 .grid-2 {
@@ -151,7 +146,7 @@ input:focus, select:focus, textarea:focus {
   margin-bottom: 1rem;
 }
 
-/* ── CARD ──────────────────────────────────────────────────────── */
+/* card */
 .card {
   background: var(--white);
   border: 1px solid var(--border);
@@ -160,7 +155,7 @@ input:focus, select:focus, textarea:focus {
   box-shadow: var(--shadow-sm);
 }
 
-/* ── BADGES ────────────────────────────────────────────────────── */
+/* badges */
 .badge {
   display: inline-block;
   padding: 3px 10px;
@@ -178,7 +173,7 @@ input:focus, select:focus, textarea:focus {
 .badge-purple { background: var(--purple-dim); color: var(--purple); }
 .badge-grey   { background: var(--surface3);   color: var(--muted); }
 
-/* ── LOGO ──────────────────────────────────────────────────────── */
+/* logo */
 .logo {
   display: flex;
   align-items: center;
@@ -203,7 +198,7 @@ input:focus, select:focus, textarea:focus {
   flex-shrink: 0;
 }
 
-/* ── HEADER ────────────────────────────────────────────────────── */
+/* sticky header */
 .app-header {
   background: var(--white);
   border-bottom: 1.5px solid var(--border);
@@ -249,7 +244,7 @@ input:focus, select:focus, textarea:focus {
   margin-left: auto;
 }
 
-/* ── AVATAR / USER-PILL ────────────────────────────────────────── */
+/* avatar + user  */
 .avatar {
   width: 32px;
   height: 32px;
@@ -278,14 +273,14 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
 }
 
-/* ── MAIN ──────────────────────────────────────────────────────── */
+/* main content area */
 .app-main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.75rem 2rem 3rem;
 }
 
-/* ── PANEL / SECTION ───────────────────────────────────────────── */
+/* panels */
 .panel {
   background: var(--white);
   border: 1.5px solid var(--border);
@@ -310,6 +305,7 @@ input:focus, select:focus, textarea:focus {
   color: var(--text);
 }
 
+/* live indicator badge */
 .live-badge {
   display: flex;
   align-items: center;
@@ -335,7 +331,7 @@ input:focus, select:focus, textarea:focus {
   50%       { opacity: .35; }
 }
 
-/* ── STATS GRID ────────────────────────────────────────────────── */
+/* stat cards at top of each page */
 .stats-grid {
   display: grid;
   gap: 1rem;
@@ -385,7 +381,7 @@ input:focus, select:focus, textarea:focus {
   opacity: .35;
 }
 
-/* ── TABLE ─────────────────────────────────────────────────────── */
+/* tables */
 .table-wrap {
   background: var(--white);
   border: 1.5px solid var(--border);
@@ -425,7 +421,7 @@ tr:hover td { background: var(--surface2); }
   padding: 2.5rem !important;
 }
 
-/* ── MODAL ─────────────────────────────────────────────────────── */
+/* modal - backdrop blur looks nice */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -489,7 +485,7 @@ tr:hover td { background: var(--surface2); }
   margin-top: 1.25rem;
 }
 
-/* ── TOAST ─────────────────────────────────────────────────────── */
+/* toast notifcation - slides up from bottom */
 #toast {
   position: fixed;
   bottom: 24px;
@@ -514,14 +510,14 @@ tr:hover td { background: var(--surface2); }
   transform: translateX(-50%) translateY(0);
 }
 
-/* ── COLOUR UTILITIES ──────────────────────────────────────────── */
+/* colour utilities */
 .text-blue   { color: var(--blue); }
 .text-green  { color: var(--green); }
 .text-red    { color: var(--red); }
 .text-amber  { color: var(--amber); }
 .text-muted  { color: var(--muted); }
 
-/* ── PROGRESS BAR ──────────────────────────────────────────────── */
+/* progress bar */
 .progress-bar {
   height: 6px;
   background: var(--surface3);
@@ -536,7 +532,7 @@ tr:hover td { background: var(--surface2); }
   transition: width .4s;
 }
 
-/* ── LAYOUT UTILITIES ──────────────────────────────────────────── */
+/* misc utilities */
 .flex   { display: flex; }
 .gap    { gap: 1rem; }
 .center { display: flex; align-items: center; justify-content: center; }

@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>UniPark — Dashboard</title>
-<!-- shared styles used across every page -->
 <link rel="stylesheet" href="css/base.css">
-<!-- dashboard-specific styles (zone cards, spot grid, booking modal, etc.) -->
 <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-<!-- top navigation bar — logo, tabs, user info, sign out -->
 <header class="app-header">
   <div class="logo"><span class="logo-mark">🅿</span> UniPark</div>
   <nav class="header-nav">
@@ -19,7 +16,6 @@
     <button class="nav-link" data-panel="predict">Predictions</button>
     <button class="nav-link" data-panel="bookings">My Bookings</button>
   </nav>
-  <!-- user pill shows initials, first name, and subscription tier -->
   <div class="header-right">
     <div class="user-pill">
       <div class="avatar avatar-green" id="user-avatar">—</div>
@@ -32,39 +28,34 @@
 
 <main class="app-main">
 
-  <!-- summary numbers at the top — available spots, occupied, and user's active bookings -->
   <div class="stats-grid stats-grid-4">
     <div class="stat-card"><div class="stat-label">Available Now</div><div class="stat-value text-green" id="stat-available">—</div><div class="stat-sub">across all zones</div><div class="stat-accent"></div></div>
     <div class="stat-card"><div class="stat-label">Occupied</div><div class="stat-value text-red" id="stat-occupied">—</div><div class="stat-sub">across all zones</div><div class="stat-accent"></div></div>
     <div class="stat-card"><div class="stat-label">My Bookings</div><div class="stat-value text-blue" id="stat-mine">0</div><div class="stat-sub">currently active</div></div>
   </div>
 
-  <!-- OVERVIEW — live zone cards + smart zone recommendations -->
+  <!-- overview -->
   <div class="panel" id="panel-overview">
     <div class="section-head">
       <div class="section-title">Live zone status</div>
       <div class="live-badge"><span class="live-dot"></span> Real-time · updates every 8s</div>
     </div>
-    <!-- zone cards are rendered by dashboard.js -->
     <div class="zones-grid" id="zones-grid"></div>
 
     <div class="section-head"><div class="section-title">Smart recommendations</div></div>
-    <!-- ranked list of best zones to park in right now -->
     <div class="rec-card" id="rec-list"></div>
   </div>
 
-  <!-- FIND A SPOT — interactive parking lot grid with filter chips -->
+  <!-- find a spot -->
   <div class="panel hidden" id="panel-find">
     <div class="section-head">
       <div class="section-title">Find a parking spot</div>
-      <!-- filter chips let the user narrow down what spots they see -->
       <div class="filter-bar">
         <button class="filter-chip active" data-filter="all">All</button>
         <button class="filter-chip" data-filter="available">Available</button>
       </div>
     </div>
 
-    <!-- colour key so the user knows what each spot colour means -->
     <div class="lot-legend">
       <div class="legend-item"><div class="legend-dot available"></div> Available</div>
       <div class="legend-item"><div class="legend-dot occupied"></div> Occupied</div>
@@ -72,22 +63,20 @@
       <div class="legend-item"><div class="legend-dot closed"></div> Closed</div>
     </div>
 
-    <!-- zone tab buttons and the actual parking grid below -->
     <div class="zone-switcher" id="zone-switcher"></div>
     <div class="lot-wrap"><div id="parking-grid"></div></div>
   </div>
 
-  <!-- PREDICTIONS — forecast of how busy each zone will be over the next 6 hours -->
+  <!-- predictions -->
   <div class="panel hidden" id="panel-predict">
     <div class="section-head">
       <div class="section-title">Predictive availability</div>
       <span style="font-size:12px;color:var(--muted)">Based on historical occupancy patterns</span>
     </div>
-    <!-- prediction cards are rendered by dashboard.js -->
     <div class="prediction-row" id="predict-grid"></div>
   </div>
 
-  <!-- MY BOOKINGS — list of everything the user has booked -->
+  <!-- my bookings -->
   <div class="panel hidden" id="panel-bookings">
     <div class="section-head"><div class="section-title">My bookings</div></div>
     <div id="bookings-list"></div>
@@ -95,29 +84,26 @@
 
 </main>
 
-<!-- BOOKING MODAL — pops up when the user clicks an available spot -->
+<!-- booking modal -->
 <div class="modal-overlay" id="modal-booking">
   <div class="modal">
     <div class="modal-header">
       <div><div class="modal-title">Reserve a spot</div><div class="modal-subtitle" id="modal-spot-subtitle"></div></div>
       <button class="btn-close" data-close="modal-booking">×</button>
     </div>
-    <!-- spot preview shows the ID, zone, type, and hourly rate -->
     <div class="spot-preview">
       <div><div class="spot-preview-id" id="preview-id">A1</div><div class="spot-preview-meta" id="preview-meta"></div></div>
     </div>
-    <!-- date/time pickers for start and end of the booking -->
     <div class="grid-2">
       <div class="form-group" style="margin:0"><label class="form-label">From</label><input class="form-input" type="datetime-local" id="book-start"></div>
       <div class="form-group" style="margin:0"><label class="form-label">Until</label><input class="form-input" type="datetime-local" id="book-end"></div>
     </div>
-    <!-- price breakdown updates live as the user changes times -->
+    <!-- price updates as the user changes times -->
     <div class="price-breakdown">
       <div class="pb-row"><span class="pb-label">Duration</span><span class="pb-value" id="pb-dur">—</span></div>
       <div class="pb-row"><span class="pb-label">Rate</span><span class="pb-value" id="pb-rate">—</span></div>
       <div class="pb-row total"><span class="pb-label">Total</span><span class="pb-value" id="pb-total">—</span></div>
     </div>
-    <!-- payment method selector — card fields only show when card is picked -->
     <div class="pay-section">
       <div class="pay-label">Payment method</div>
       <div class="pay-methods">
@@ -139,20 +125,18 @@
   </div>
 </div>
 
-<!-- SUCCESS MODAL — shown after a booking is confirmed -->
+<!-- success modal shown after payment -->
 <div class="modal-overlay" id="modal-success">
   <div class="modal success-modal">
     <div class="success-title">You're all set!</div>
     <p class="success-sub">Booking confirmed and payment processed.</p>
-    <!-- booking reference number -->
     <div class="success-ref" id="success-ref">REF: #UP-XXXXXX</div>
-    <!-- summary line: spot, time range, amount paid -->
     <p class="success-detail" id="success-detail"></p>
     <button class="btn btn-primary" style="width:auto;padding:10px 2rem" id="btn-success-done">View my bookings</button>
   </div>
 </div>
 
-<!-- scripts loaded last so the DOM is ready when they run -->
+<!-- store.js must come first -->
 <script src="js/store.js"></script>
 <script src="js/dashboard.js"></script>
 </body>

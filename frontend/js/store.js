@@ -1,5 +1,4 @@
 // store.js — shared data layer used by all pages
-// wraps every API call and keeps a local cache so the UI stays fast
 
 const UniPark = (() => {
   const API = '/api';
@@ -30,7 +29,7 @@ const UniPark = (() => {
     target.splice(0, target.length, ...(values || []));
   }
 
-  // low-level request helper — sends a synchronous XHR and returns parsed JSON
+
   // synchronous keeps the code simple since we don't need async flows here
   function request(method, path, body) {
     const xhr = new XMLHttpRequest();
@@ -103,7 +102,6 @@ const UniPark = (() => {
   function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
   function randId() { return Math.random().toString(36).slice(2,8).toUpperCase(); }
 
-  // ── AUTH ──────────────────────────────────────────────────────────────────
   function getUsers() { return cache.users || []; }
   function saveUsers(_) { /* backend-owned data: nothing to do on the frontend */ }
 
@@ -162,7 +160,6 @@ const UniPark = (() => {
     return cache.current;
   }
 
-  // ── BOOKINGS ──────────────────────────────────────────────────────────────
   function getBookings() { return cache.bookings || []; }
   function saveBookings(b) { cache.bookings = b || []; }
 
@@ -177,7 +174,7 @@ const UniPark = (() => {
     return { ok:true, booking:r.booking };
   }
 
-  // cancel a booking by ID — the server marks it cancelled and we refresh
+  // cancel a booking by ID 
   function cancelBooking(id) {
     const r = request('DELETE', '/bookings/' + encodeURIComponent(id));
     if (!r.ok) return { ok:false, error:r.error || 'Cancellation failed.' };
@@ -191,12 +188,9 @@ const UniPark = (() => {
     if (r.ok) refreshData();
   }
 
-  // ── CLOSED SPOTS ──────────────────────────────────────────────────────────
-  // closed spots are stored on the spot object itself (spot.closed === true)
   function getClosedSpots() { return SPOTS.filter(s => s.closed).map(s => s.id); }
   function isSpotClosed(id) { return !!SPOTS.find(s => s.id === id && s.closed); }
 
-  // toggle a spot between open and closed — admin only, refreshes zone data afterwards
   function toggleSpotClosed(id) {
     const r = request('PATCH', '/spots/' + encodeURIComponent(id) + '/toggle-closed');
     if (!r.ok) { toast('⚠️ ' + (r.error || 'Could not update spot.')); return { ok:false, error:r.error }; }
@@ -205,7 +199,6 @@ const UniPark = (() => {
     return { ok:true };
   }
 
-  // ── SPOT STATUS ───────────────────────────────────────────────────────────
   // returns one of: 'closed' | 'mine' | 'occupied' | 'available'
   // used to colour-code spots in the parking grid
   function spotStatus(spotId, userEmail) {
@@ -220,7 +213,6 @@ const UniPark = (() => {
   function getSpot(id) { return SPOTS.find(s => s.id === id); }
   function zoneSpots(zoneId) { return SPOTS.filter(s => s.zone === zoneId); }
 
-  // ── LIVE SIMULATION ───────────────────────────────────────────────────────
   // the simulation creates random bookings every 8 seconds to make the lot feel busy
   let simCallbacks = [];
   let simTimer = null;
@@ -238,7 +230,6 @@ const UniPark = (() => {
     }, 8000);
   }
 
-  // ── ZONE STATS ────────────────────────────────────────────────────────────
   // computes available, occupied, closed, and "mine" counts for each zone right now
   function getZoneStats(userEmail) {
     const now = new Date().toISOString();
@@ -377,7 +368,6 @@ const UniPark = (() => {
       .slice(0, 3);
   }
 
-  // ── FORMATTERS ────────────────────────────────────────────────────────────
   // human-readable date + time, e.g. "27 May, 09:30 am"
   function fmtDate(str) { return new Date(str).toLocaleString('en-AU', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
   function fmtTime(str) { return new Date(str).toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' }); }

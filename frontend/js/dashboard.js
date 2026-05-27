@@ -1,14 +1,13 @@
-// ─── UNIPARK · DASHBOARD ──────────────────────────────────────────────────────
-// This file controls everything the user sees on dashboard.html.
-// It reads data from store.js (UniPark.*) and updates the DOM.
+
+// it reads data from store.js 
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Make sure the user is logged in; redirect to login page if not
+  // make sure the user is logged in; redirect to login page if not
   const user = UniPark.requireAuth();
   if (!user) return;
 
-  // ── HEADER ────────────────────────────────────────────────────────────────
+  // header
   // Fill in the user's initials, first name, and subscription badge
   document.getElementById('user-avatar').textContent = UniPark.initials(user.name);
   document.getElementById('user-name').textContent   = user.name.split(' ')[0];
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'index.html';
   });
 
-  // ── NAV TABS ──────────────────────────────────────────────────────────────
+  // nav tabs
   // Clicking a tab hides all panels and shows the matching one
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
@@ -41,18 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ── STATE ─────────────────────────────────────────────────────────────────
+  // state
   let activeZone    = UniPark.ZONES[0].id; // currently selected zone (default: A)
   let activeFilter  = 'all';               // current filter chip selection
   let selectedSpot  = null;                // spot the booking modal is open for
   let selectedPay   = 'card';              // selected payment method
 
-  // ── LIVE SIMULATION ───────────────────────────────────────────────────────
-  // Start the background simulation and re-render the page every time it ticks
+
   UniPark.startSimulation();
   UniPark.onSimUpdate(() => renderAll());
 
-  // ── STATS ROW ─────────────────────────────────────────────────────────────
+  // stats
   // Updates the three number cards at the top of the page
   function renderStats() {
     const stats    = UniPark.getZoneStats(user.email);
@@ -67,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('stat-mine').textContent      = mine;
   }
 
-  // ── ZONE CARD ─────────────────────────────────────────────────────────────
+  // zone cards
   // Renders the live availability card in the Overview tab
   function renderZoneCards() {
     const stats  = UniPark.getZoneStats(user.email);
@@ -100,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // ── ZONE SWITCHER ─────────────────────────────────────────────────────────
+
   // Renders the zone tab buttons above the parking grid
   function renderZoneSwitcher() {
     const wrap = document.getElementById('zone-switcher');
@@ -130,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGrid();
   };
 
-  // ── RECOMMENDATIONS ───────────────────────────────────────────────────────
+
   // Shows a short list of suggested zones below the zone cards
   function renderRecommendations() {
     const recs = UniPark.getRecommendations(user.email);
@@ -152,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ).join('');
   }
 
-  // ── SPOT GRID ─────────────────────────────────────────────────────────────
   // Renders the visual parking lot in the Find a Spot tab
   function renderGrid() {
     // Get all spots, then apply the active filter chip
@@ -204,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── PREDICTIONS ───────────────────────────────────────────────────────────
   // Shows a bar chart + probability table for the next 6 hours per zone
   function renderPredictions() {
     const stats = UniPark.getZoneStats(user.email);
@@ -241,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // ── MY BOOKINGS ───────────────────────────────────────────────────────────
   // Lists all bookings the current user has made (newest first)
   function renderBookings() {
     UniPark.expireBookings();
@@ -297,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── BOOKING MODAL ─────────────────────────────────────────────────────────
   // Opens the reservation form for a chosen spot
   function openBookingModal(spot) {
     selectedSpot = spot;
@@ -385,7 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAll();
   });
 
-  // ── FILTER CHIPS ──────────────────────────────────────────────────────────
   // Clicking a chip filters the spot grid by type or availability
   document.querySelectorAll('.filter-chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -396,7 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ── MODALS ────────────────────────────────────────────────────────────────
   function openModal(id)  { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -419,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBookings();
   });
 
-  // ── FULL RE-RENDER ────────────────────────────────────────────────────────
   // Called on page load and every time the simulation ticks
   function renderAll() {
     renderStats();

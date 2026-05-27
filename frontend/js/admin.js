@@ -1,4 +1,3 @@
-// admin.js — powers the admin dashboard (admin.html)
 // handles the overview, analytics, bookings, users, and spot-management panels
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'index.html';
   });
 
-  // ── NAVIGATION ────────────────────────────────────────────────────────────
+  // navbar 
   // each nav button shows its panel and hides the others, then triggers a render
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
@@ -34,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ── LIVE SIMULATION ───────────────────────────────────────────────────────
-  // the simulation generates random occupancy ticks every 8 seconds
   UniPark.startSimulation();
   UniPark.onSimUpdate(() => {
     // always refresh the header stats and zone cards — they're always visible
@@ -49,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── HEADER STAT CARDS ─────────────────────────────────────────────────────
+  // header cards
   // the five numbers at the very top of the page — totals across all time
   function renderStats() {
     const s = UniPark.getAdminStats();
@@ -83,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // ── ANALYTICS ─────────────────────────────────────────────────────────────
+  // analytics
   // called once when the analytics tab is first opened, then selectively via onSimUpdate
   function renderAnalytics() {
     renderTodayStats();
@@ -94,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderQuickStats();
   }
 
-  // TODAY AT A GLANCE — four live cards computed directly from booking data
   // these update every 8s so the admin can see the impact of new bookings immediately
   function renderTodayStats() {
     const now = new Date();
@@ -137,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
   }
 
-  // 14-DAY REVENUE CHART — SVG bar chart, today's bar is highlighted in blue
+
   // re-renders on every sim tick when the analytics panel is visible
   function renderRevenueChart() {
     const data = UniPark.getDailyRevenue(14);
@@ -172,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </svg>`;
   }
 
-  // PEAK HOUR BARS — shows average occupancy for each hour of the day (6am–8pm)
+  // peak hours
   // bars are red when above 50% average occupancy, green when below
   function renderPeakBars() {
     const peak  = UniPark.getPeakHours();
@@ -190,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // OCCUPANCY HEATMAP — zone × hour grid, colour intensity = average occupancy
+  // heatmap
   // uses getUTCHours() because the occupancy history is stored with UTC timestamps
   function renderHeatmap() {
     const history = UniPark.getHistory();
@@ -233,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     wrap.innerHTML = html;
   }
 
-  // ZONE UTILISATION BARS — horizontal bars showing each zone's historical average usage
+  // zone usage
   function renderZoneUtil() {
     const data = UniPark.getZoneUtilisation();
     document.getElementById('zone-util').innerHTML = data.map(z => {
@@ -248,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // KEY METRICS — seven summary rows computed from booking and history data
+  // summary data
   function renderQuickStats() {
     const zoneUtil     = UniPark.getZoneUtilisation();
     const peak         = UniPark.getPeakHours();
@@ -260,13 +256,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('qs-busiest-zone').textContent =
       busiest ? 'Zone ' + busiest.id + ' (' + busiest.utilPct + '%)' : '—';
 
-    // peak hour — restricted to 6am–10pm to avoid midnight artefacts from timezone handling
+    // peak hour
     const fmtH = h => h === 0 ? '12am' : h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm';
     const dayPeak = peak.filter(p => p.hour >= 6 && p.hour <= 22).reduce((a, b) => a.avg > b.avg ? a : b, { hour: 9, avg: 0 });
     document.getElementById('qs-peak-hour').textContent =
       fmtH(dayPeak.hour) + ' (' + Math.round(dayPeak.avg * 100) + '% avg)';
 
-    // average daily bookings — total real bookings divided by number of unique days in history
+    // average daily bookings
     const uniqueDays = new Set(history.map(r => r.ts.slice(0, 10))).size || 1;
     document.getElementById('qs-avg-bookings').textContent =
       Math.round(realBookings.length / uniqueDays) + ' / day';
@@ -280,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('qs-avg-duration').textContent = (hrs / realBookings.length).toFixed(1) + ' hrs';
     }
 
-    // top payment method — whichever has the most bookings
+    // top payment method 
     const payCounts = {};
     realBookings.forEach(b => { payCounts[b.payMethod] = (payCounts[b.payMethod] || 0) + 1; });
     const topPay    = Object.entries(payCounts).sort((a, b) => b[1] - a[1])[0];
@@ -303,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
       days[maxDay] + ' (' + dayCounts[maxDay] + ' bookings)';
   }
 
-  // ── ALL BOOKINGS ──────────────────────────────────────────────────────────
+  // bookings
   // search is client-side — filters as the admin types, no server round-trip needed
   let bSearch = '';
   document.getElementById('booking-search').addEventListener('input', function () {
@@ -376,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── USERS ─────────────────────────────────────────────────────────────────
+  //users
   // same pattern as bookings — live client-side search, re-renders on input
   let uSearch = '';
   document.getElementById('user-search').addEventListener('input', function () {
@@ -414,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // ── MANAGE SPOTS ──────────────────────────────────────────────────────────
+  
   // admin can click any non-occupied spot to close or reopen it
   let activeZone = 'A'; // which zone's grid is currently shown
 
@@ -473,8 +469,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── INITIAL RENDER ────────────────────────────────────────────────────────
-  // kick off the first render pass for everything that's visible on load
+  // render admin
+  // kick off the first render pass for everything that visible on load
   renderStats();
   renderLiveGrid();
   renderBookings();

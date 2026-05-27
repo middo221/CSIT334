@@ -1,4 +1,4 @@
-/* ── UNIPARK · AUTH PAGE ───────────────────────────────────────── */
+/* auth page - login and register */
 body.auth-page {
   display: flex;
   flex-direction: column;
@@ -9,13 +9,11 @@ body.auth-page {
   padding: 24px 16px;
 }
 
-/* ── WRAPPER ───────────────────────────────────────────────────── */
 .auth-wrapper {
   width: 100%;
   max-width: 420px;
 }
 
-/* ── LOGO AREA ─────────────────────────────────────────────────── */
 .auth-logo-wrap {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -41,7 +39,7 @@ body.auth-page {
   margin-top: 6px;
 }
 
-/* ── CARD ──────────────────────────────────────────────────────── */
+/* the white card */
 .auth-card {
   background: var(--white);
   padding: 2rem;
@@ -50,7 +48,7 @@ body.auth-page {
   box-shadow: 0 8px 32px rgba(28,20,80,.10);
 }
 
-/* ── TABS ──────────────────────────────────────────────────────── */
+/* sign in and register tabs */
 .auth-tabs {
   display: flex;
   background: var(--surface2);
@@ -82,11 +80,10 @@ body.auth-page {
   box-shadow: 0 1px 4px rgba(15,30,80,.12);
 }
 
-/* ── FORMS ─────────────────────────────────────────────────────── */
 .auth-form         { display: none; }
 .auth-form.active  { display: block; }
 
-/* ── SUBSCRIPTION OPTIONS ──────────────────────────────────────── */
+/* sub plan picker */
 .sub-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -114,7 +111,7 @@ body.auth-page {
 .sub-option-icon  { font-size: 22px; margin-bottom: 4px; }
 .sub-option-label { font-size: 12px; font-weight: 600; color: var(--text); }
 
-/* ── DEMO HINT ─────────────────────────────────────────────────── */
+/* hint box with demo crednentials so can log in quickly */
 .demo-hint {
   margin-top: 1rem;
   padding: 10px 14px;
@@ -129,7 +126,6 @@ body.auth-page {
 
 .demo-hint strong { color: var(--blue); }
 
-/* ── FOOTER ────────────────────────────────────────────────────── */
 .auth-footer {
   margin-top: 1.25rem;
   text-align: center;
