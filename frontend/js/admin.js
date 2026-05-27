@@ -29,7 +29,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   UniPark.onSimUpdate(()=>{
     renderStats();
     renderLiveGrid();
-    if(!document.getElementById('panel-analytics').classList.contains('hidden')) renderAnalytics();
+    if(!document.getElementById('panel-analytics').classList.contains('hidden')){
+      renderTodayStats();   // always refresh live cards
+      renderRevenueChart(); // picks up any new bookings
+      renderQuickStats();
+    }
   });
 
   // ── STATS ─────────────────────────────────────────────────────────────────
@@ -65,71 +69,87 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // ── ANALYTICS ─────────────────────────────────────────────────────────────
   function renderAnalytics(){
-    renderTrendChart();
+    renderTodayStats();
+    renderRevenueChart();
     renderPeakBars();
     renderHeatmap();
     renderZoneUtil();
     renderQuickStats();
   }
 
-  function renderQuickStats(){
-    // Busiest zone — highest historical average utilisation
-    const zoneUtil = UniPark.getZoneUtilisation();
-    const busiest = zoneUtil.reduce((a,b) => a.utilPct > b.utilPct ? a : b, zoneUtil[0]);
-    document.getElementById('qs-busiest-zone').textContent = busiest ? 'Zone ' + busiest.id : '—';
+  // TODAY AT A GLANCE — pure live booking data, reflects new bookings instantly
+  function renderTodayStats(){
+    const now = new Date();
+    const todayUTC = now.toISOString().slice(0,10);
+    const allB = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
+    const todayB = allB.filter(b => (b.createdAt || b.start || '').slice(0,10) === todayUTC);
+    const activeNow = UniPark.getBookings().filter(b => !b.expired && !b.cancelled && b.end > now.toISOString()).length;
+    const revToday = todayB.reduce((s,b) => s + Number(b.total||0), 0);
+    const zoneStats = UniPark.getZoneStats('__admin__');
+    const totalSpots = zoneStats.reduce((s,z) => s + z.spots, 0);
+    const occupiedNow = zoneStats.reduce((s,z) => s + z.occupied, 0);
+    const occupancyPct = totalSpots > 0 ? Math.round(occupiedNow / totalSpots * 100) : 0;
+    const busiestZone = zoneStats.reduce((a,b) => a.pct > b.pct ? a : b, zoneStats[0]);
+    const occCol = occupancyPct > 80 ? 'var(--red)' : occupancyPct > 55 ? 'var(--amber)' : 'var(--green)';
 
-    // Peak hour — hour with highest average occupancy
-    const peak = UniPark.getPeakHours();
-    const peakHour = peak.reduce((a,b) => a.avg > b.avg ? a : b);
-    const h = peakHour.hour;
-    const peakLabel = h === 0 ? '12:00 am' : h < 12 ? h + ':00 am' : h === 12 ? '12:00 pm' : (h-12) + ':00 pm';
-    document.getElementById('qs-peak-hour').textContent = peakLabel;
-
-    // Avg daily bookings — real bookings spread across unique history days
-    const history = UniPark.getHistory();
-    const uniqueDays = new Set(history.map(r => r.ts.slice(0,10))).size || 1;
-    const realBookings = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
-    const avg = Math.round(realBookings.length / uniqueDays);
-    document.getElementById('qs-avg-bookings').textContent = '~' + avg;
+    document.getElementById('today-stats').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">Bookings today</div>
+        <div class="stat-value text-blue">${todayB.length}</div>
+        <div class="stat-sub">${activeNow} currently active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue today</div>
+        <div class="stat-value text-green">$${revToday.toFixed(2)}</div>
+        <div class="stat-sub">from ${todayB.length} booking${todayB.length!==1?'s':''}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Occupancy now</div>
+        <div class="stat-value" style="color:${occCol}">${occupancyPct}%</div>
+        <div class="stat-sub">${occupiedNow} / ${totalSpots} spots taken</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Busiest zone now</div>
+        <div class="stat-value text-amber">${busiestZone ? busiestZone.id : '—'}</div>
+        <div class="stat-sub">${busiestZone ? busiestZone.pct + '% full · ' + busiestZone.available + ' free' : ''}</div>
+      </div>`;
   }
 
-  // Trend line (SVG)
-  function renderTrendChart(){
-    const data = UniPark.getOccupancyTrend(14);
-    const W=600, H=120, PAD=8;
-    const vals = data.map(d=>d.avgOcc);
-    const max  = Math.max(...vals,0.01);
-    const pts  = data.map((d,i)=>{
-      const x = PAD + (i/(data.length-1))*(W-PAD*2);
-      const y = H - PAD - (d.avgOcc/max)*(H-PAD*2);
-      return `${x},${y}`;
-    }).join(' ');
-    const areaBottom = data.map((d,i)=>{
-      const x=PAD+(i/(data.length-1))*(W-PAD*2);
-      const y=H-PAD-(d.avgOcc/max)*(H-PAD*2);
-      return `${x},${y}`;
-    });
-    const area = `M${areaBottom[0]} L${areaBottom.join(' L')} L${W-PAD},${H-PAD} L${PAD},${H-PAD} Z`;
-    const labelStep = Math.ceil(data.length/7);
-    const labels = data.map((d,i)=>i%labelStep===0
-      ?`<text x="${PAD+(i/(data.length-1))*(W-PAD*2)}" y="${H+4}" text-anchor="middle" fill="#6b7a92" font-size="8" font-family="DM Mono">${d.day}</text>`:''
-    ).join('');
+  // 14-DAY REVENUE CHART — bar chart, updates as new bookings are made
+  function renderRevenueChart(){
+    const data = UniPark.getDailyRevenue(14);
+    const W=600, H=110, PAD=6, GAP=4;
+    const maxRev = Math.max(...data.map(d=>d.revenue), 1);
+    const barW = (W - PAD*2 - GAP*(data.length-1)) / data.length;
 
-    document.getElementById('trend-chart').innerHTML = `
-      <svg viewBox="0 0 ${W} ${H+14}" style="width:100%;overflow:visible">
-        <defs>
-          <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="rgba(52,217,123,0.22)"/>
-            <stop offset="100%" stop-color="rgba(52,217,123,0)"/>
-          </linearGradient>
-        </defs>
-        <path d="${area}" fill="url(#tg)"/>
-        <polyline points="${pts}" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        ${labels}
+    const bars = data.map((d,i) => {
+      const x = PAD + i*(barW+GAP);
+      const barH = Math.max(d.revenue>0?3:1, (d.revenue/maxRev)*(H-PAD*2-18));
+      const y = H - PAD - 18 - barH;
+      const isToday = i === data.length-1;
+      const col = isToday ? 'var(--blue)' : d.revenue>0 ? 'var(--blue-dim)' : 'var(--surface3)';
+      const borderCol = isToday ? 'var(--blue-dark)' : d.revenue>0 ? 'var(--blue)' : 'var(--border)';
+      return `<g>
+        <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="3"
+          fill="${col}" stroke="${borderCol}" stroke-width="${isToday?1.5:0}"
+          title="${d.day}: $${d.revenue.toFixed(2)} · ${d.count} booking${d.count!==1?'s':''}"/>
+        ${d.revenue>0?`<text x="${x+barW/2}" y="${y-3}" text-anchor="middle" fill="var(--blue)" font-size="7" font-weight="700" font-family="system-ui">$${d.revenue<10?d.revenue.toFixed(1):Math.round(d.revenue)}</text>`:''}
+        <text x="${x+barW/2}" y="${H-3}" text-anchor="middle" fill="${isToday?'var(--blue)':'var(--muted)'}" font-size="7" font-weight="${isToday?700:400}" font-family="system-ui">${d.day.split(' ')[0]}</text>
+      </g>`;
+    }).join('');
+
+    const todayRev = data[data.length-1]?.revenue || 0;
+    document.getElementById('revenue-chart').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <span style="font-size:11px;color:var(--muted)">Today highlighted in blue</span>
+        <span style="font-size:13px;font-weight:800;color:var(--blue)">Today: $${todayRev.toFixed(2)}</span>
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;overflow:visible">
+        ${bars}
       </svg>`;
   }
 
-  // Peak hours bars
+  // PEAK HOURS BAR CHART
   function renderPeakBars(){
     const peak = UniPark.getPeakHours();
     const shown = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
@@ -146,41 +166,39 @@ document.addEventListener('DOMContentLoaded',()=>{
     }).join('');
   }
 
-  // Occupancy heatmap (zones × hours)
+  // OCCUPANCY HEATMAP — uses UTC hours to match how history is stored
   function renderHeatmap(){
     const history = UniPark.getHistory();
     const hours = [7,8,9,10,11,12,13,14,15,16,17,18,19];
     const zones = UniPark.ZONES;
 
     function avgOcc(zoneId, hour){
-      const recs = history.filter(h=>h.zone===zoneId && new Date(h.ts).getHours()===hour);
+      const recs = history.filter(h=>h.zone===zoneId && new Date(h.ts).getUTCHours()===hour);
       if(!recs.length) return 0;
       return recs.reduce((a,h)=>a+h.occupied/h.capacity,0)/recs.length;
     }
 
     const wrap = document.getElementById('heatmap');
     let html = '<div class="heatmap-grid">';
-    // Column headers
     html += '<div class="heatmap-label"></div>';
     hours.forEach(h=>{
       const l = h<12?h+'am': h===12?'12pm':(h-12)+'pm';
       html+=`<div class="heatmap-col-label">${l}</div>`;
     });
-    // Rows
     zones.forEach(z=>{
       html+=`<div class="heatmap-label">${z.id}</div>`;
       hours.forEach(h=>{
         const v=avgOcc(z.id,h);
         const alpha=0.1+v*0.85;
         const col=v>0.75?`rgba(240,91,91,${alpha})`:v>0.5?`rgba(240,165,0,${alpha})`:`rgba(52,217,123,${alpha})`;
-        html+=`<div class="heatmap-cell" style="background:${col}" title="${z.name} at ${h<12?h+'am':h===12?'12pm':(h-12)+'pm'}: ${Math.round(v*100)}% avg occupancy">${Math.round(v*100)}%</div>`;
+        html+=`<div class="heatmap-cell" style="background:${col}" title="${z.name} at ${h<12?h+'am':h===12?'12pm':(h-12)+'pm'}: ${Math.round(v*100)}% avg">${Math.round(v*100)}%</div>`;
       });
     });
     html+='</div>';
     wrap.innerHTML=html;
   }
 
-  // Zone utilisation
+  // ZONE UTILISATION BARS
   function renderZoneUtil(){
     const data = UniPark.getZoneUtilisation();
     document.getElementById('zone-util').innerHTML = data.map(z=>{
@@ -193,6 +211,60 @@ document.addEventListener('DOMContentLoaded',()=>{
         <div class="zone-util-pct">${z.utilPct}%</div>
       </div>`;
     }).join('');
+  }
+
+  // KEY METRICS — 7 rows
+  function renderQuickStats(){
+    const zoneUtil     = UniPark.getZoneUtilisation();
+    const peak         = UniPark.getPeakHours();
+    const history      = UniPark.getHistory();
+    const realBookings = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
+
+    // Busiest zone (historical avg)
+    const busiest = zoneUtil.reduce((a,b) => a.utilPct > b.utilPct ? a : b, zoneUtil[0]);
+    document.getElementById('qs-busiest-zone').textContent =
+      busiest ? 'Zone ' + busiest.id + ' (' + busiest.utilPct + '%)' : '—';
+
+    // Peak hour — restrict to daytime hours to avoid timezone artefacts
+    const fmtH = h => h===0?'12am': h<12?h+'am': h===12?'12pm':(h-12)+'pm';
+    const dayPeak = peak.filter(p=>p.hour>=6&&p.hour<=22).reduce((a,b)=>a.avg>b.avg?a:b,{hour:9,avg:0});
+    document.getElementById('qs-peak-hour').textContent =
+      fmtH(dayPeak.hour) + ' (' + Math.round(dayPeak.avg*100) + '% avg)';
+
+    // Avg daily bookings
+    const uniqueDays = new Set(history.map(r=>r.ts.slice(0,10))).size || 1;
+    document.getElementById('qs-avg-bookings').textContent =
+      '~' + Math.round(realBookings.length/uniqueDays) + ' / day';
+
+    // Avg booking duration
+    if(realBookings.length>0){
+      const hrs = realBookings.reduce((s,b)=>{
+        const h=(new Date(b.end)-new Date(b.start))/3600000;
+        return s+(isNaN(h)?0:h);
+      },0);
+      document.getElementById('qs-avg-duration').textContent = (hrs/realBookings.length).toFixed(1)+' hrs';
+    }
+
+    // Top payment method
+    const payCounts={};
+    realBookings.forEach(b=>{payCounts[b.payMethod]=(payCounts[b.payMethod]||0)+1;});
+    const topPay=Object.entries(payCounts).sort((a,b)=>b[1]-a[1])[0];
+    const payLabels={card:'Card',apple:'Apple Pay',google:'Google Pay'};
+    document.getElementById('qs-top-pay').textContent = topPay
+      ?(payLabels[topPay[0]]||topPay[0])+' ('+Math.round(topPay[1]/realBookings.length*100)+'%)':'—';
+
+    // Revenue this week
+    const weekAgo=new Date(Date.now()-7*86400000).toISOString();
+    const weekRev=realBookings.filter(b=>(b.createdAt||b.start)>=weekAgo).reduce((s,b)=>s+Number(b.total||0),0);
+    document.getElementById('qs-revenue-week').textContent='$'+weekRev.toFixed(2);
+
+    // Busiest day of week
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const dayCounts=Array(7).fill(0);
+    realBookings.forEach(b=>{dayCounts[new Date(b.start).getDay()]++;});
+    const maxDay=dayCounts.indexOf(Math.max(...dayCounts));
+    document.getElementById('qs-busiest-day').textContent=
+      days[maxDay]+' ('+dayCounts[maxDay]+' bookings)';
   }
 
   // ── ALL BOOKINGS ──────────────────────────────────────────────────────────
@@ -324,7 +396,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         const closed=UniPark.isSpotClosed(id);
         if(!confirm(closed?`Reopen spot ${id}?`:`Close spot ${id} to new bookings?`)) return;
         UniPark.toggleSpotClosed(id); renderSpots(); renderStats();
-        UniPark.toast(closed?`✅ Spot ${id} reopened`:`🔒 Spot ${id} closed`);
+        UniPark.toast(closed?`Spot ${id} reopened`:`Spot ${id} closed`);
       });
     });
   }

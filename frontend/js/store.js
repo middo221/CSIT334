@@ -237,7 +237,7 @@ const UniPark = (() => {
     const history = getHistory();
     const byHour = Array(24).fill(0).map(() => ({ sum:0, count:0 }));
     history.forEach(h => {
-      const hour = new Date(h.ts).getHours();
+      const hour = new Date(h.ts).getUTCHours(); // use UTC to match how seed stores hours
       byHour[hour].sum += h.occupied / h.capacity;
       byHour[hour].count++;
     });
@@ -251,11 +251,30 @@ const UniPark = (() => {
     for (let d = days-1; d >= 0; d--) {
       const day = new Date(now - d*86400000);
       const dayStr = day.toLocaleDateString('en-AU', { month:'short', day:'numeric' });
-      const records = history.filter(h => new Date(h.ts).toDateString() === day.toDateString());
+      const dayUTC = day.toISOString().slice(0,10); // compare YYYY-MM-DD in UTC
+      const records = history.filter(h => h.ts.slice(0,10) === dayUTC);
       const avgOcc = records.length > 0
         ? records.reduce((a,h) => a + h.occupied / h.capacity, 0) / records.length
         : 0;
       result.push({ day:dayStr, avgOcc });
+    }
+    return result;
+  }
+
+  function getDailyRevenue(days=14) {
+    const bookings = getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
+    const now = Date.now();
+    const result = [];
+    for (let d = days-1; d >= 0; d--) {
+      const day = new Date(now - d*86400000);
+      const dayStr = day.toLocaleDateString('en-AU', { month:'short', day:'numeric' });
+      const dayUTC = day.toISOString().slice(0,10);
+      const dayBookings = bookings.filter(b => (b.createdAt || b.start || '').slice(0,10) === dayUTC);
+      result.push({
+        day: dayStr,
+        revenue: dayBookings.reduce((s,b) => s + Number(b.total||0), 0),
+        count: dayBookings.length,
+      });
     }
     return result;
   }
@@ -323,7 +342,7 @@ const UniPark = (() => {
     getBookings, myBookings, addBooking, cancelBooking, expireBookings,
     getClosedSpots, isSpotClosed, toggleSpotClosed,
     spotStatus, getSpot, zoneSpots,
-    getZoneStats, getAdminStats, getHistory, getPeakHours, getOccupancyTrend, getZoneUtilisation,
+    getZoneStats, getAdminStats, getHistory, getPeakHours, getOccupancyTrend, getDailyRevenue, getZoneUtilisation,
     predictAvailability, getRecommendations,
     startSimulation, onSimUpdate,
     randId, daysAgo, fmtDate, fmtTime, toLocalInput, initials, toast,

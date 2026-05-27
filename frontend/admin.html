@@ -11,7 +11,7 @@
 
 <header class="app-header">
   <div class="logo"><div class="logo-mark" style="background:var(--admin)">🅿</div> UniPark</div>
-  <div class="admin-badge">⚙ Admin</div>
+  <div class="admin-badge">Admin</div>
   <nav class="header-nav">
     <button class="nav-link active" data-panel="overview">Overview</button>
     <button class="nav-link" data-panel="analytics"> Analytics</button>
@@ -58,10 +58,18 @@
 
   <!-- ANALYTICS -->
   <div class="panel hidden" id="panel-analytics">
+
+    <!-- TODAY AT A GLANCE (live, recomputed every 8s) -->
+    <div class="section-head" style="margin-bottom:.75rem">
+      <div class="section-title">Today at a glance</div>
+      <div class="live-badge"><span class="live-dot"></span> Live · updates every 8s</div>
+    </div>
+    <div id="today-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.75rem;margin-bottom:1.5rem"></div>
+
     <div class="analytics-grid">
       <div class="chart-card">
-        <div class="chart-title">14-day occupancy trend (avg across all zones)</div>
-        <div id="trend-chart"></div>
+        <div class="chart-title">14-day revenue ($) · updates with each booking</div>
+        <div id="revenue-chart" style="padding-top:.5rem"></div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Zone utilisation (historical average)</div>
@@ -76,11 +84,15 @@
         </div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Stats</div>
+        <div class="chart-title">Key metrics</div>
         <div id="quick-stats" style="padding-top:.25rem">
           <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Busiest zone</span><span class="mono" style="font-size:12px" id="qs-busiest-zone">—</span></div>
           <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Peak hour</span><span class="mono" style="font-size:12px" id="qs-peak-hour">—</span></div>
           <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Avg daily bookings</span><span class="mono" style="font-size:12px" id="qs-avg-bookings">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Avg booking duration</span><span class="mono" style="font-size:12px" id="qs-avg-duration">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Top payment method</span><span class="mono" style="font-size:12px" id="qs-top-pay">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Revenue this week</span><span class="mono" style="font-size:12px" id="qs-revenue-week">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px"><span style="color:var(--muted)">Busiest day</span><span class="mono" style="font-size:12px" id="qs-busiest-day">—</span></div>
         </div>
       </div>
     </div>
