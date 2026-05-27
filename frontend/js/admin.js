@@ -1,23 +1,16 @@
-// handles the overview, analytics, bookings, users, and spot-management panels
-
 document.addEventListener('DOMContentLoaded', () => {
 
-  // make sure only admin accounts can reach this page
   const admin = UniPark.requireAdmin();
   if (!admin) return;
 
-  // fill in the admin's initials and name in the header pill
   document.getElementById('admin-avatar').textContent = UniPark.initials(admin.name);
-  document.getElementById('admin-name').textContent   = admin.name;
+  document.getElementById('admin-name').textContent = admin.name;
 
-  // sign out clears the stored token and sends the user back to the login page
   document.getElementById('btn-logout').addEventListener('click', () => {
     UniPark.logout();
     window.location.href = 'index.html';
   });
 
-  // navbar 
-  // each nav button shows its panel and hides the others, then triggers a render
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -25,45 +18,37 @@ document.addEventListener('DOMContentLoaded', () => {
       const p = link.dataset.panel;
       document.querySelectorAll('.panel').forEach(x => x.classList.add('hidden'));
       document.getElementById('panel-' + p).classList.remove('hidden');
-      // only render the panel that was just switched to — avoids doing work off-screen
       if (p === 'analytics') renderAnalytics();
-      if (p === 'bookings')  renderBookings();
-      if (p === 'users')     renderUsers();
-      if (p === 'spots')     renderSpots();
+      if (p === 'bookings') renderBookings();
+      if (p === 'users') renderUsers();
+      if (p === 'spots') renderSpots();
     });
   });
 
   UniPark.startSimulation();
   UniPark.onSimUpdate(() => {
-    // always refresh the header stats and zone cards — they're always visible
     renderStats();
     renderLiveGrid();
-    // only re-render analytics charts if that panel is currently open
     if (!document.getElementById('panel-analytics').classList.contains('hidden')) {
-      renderTodayStats();   // live booking counts and revenue for today
-      renderRevenueChart(); // picks up any new booking revenue immediately
-      renderQuickStats();   // recalculates all the key metric rows
+      renderTodayStats();
+      renderRevenueChart();
+      renderQuickStats();
     }
   });
 
-  // header cards
-  // the five numbers at the very top of the page — totals across all time
   function renderStats() {
     const s = UniPark.getAdminStats();
     document.getElementById('stat-bookings').textContent = s.totalBookings;
-    document.getElementById('stat-users').textContent    = s.totalUsers;
-    document.getElementById('stat-revenue').textContent  = '$' + s.revenue.toFixed(2);
-    document.getElementById('stat-active').textContent   = s.activeNow;
-    document.getElementById('stat-spots').textContent    = s.totalSpots;
+    document.getElementById('stat-users').textContent = s.totalUsers;
+    document.getElementById('stat-revenue').textContent = '$' + s.revenue.toFixed(2);
+    document.getElementById('stat-active').textContent = s.activeNow;
+    document.getElementById('stat-spots').textContent = s.totalSpots;
   }
 
-  // ── LIVE ZONE GRID (overview panel) ──────────────────────────────────────
-  // one card per zone showing available spots, occupancy %, and a colour-coded progress bar
   function renderLiveGrid() {
     const stats = UniPark.getZoneStats('__admin__');
     document.getElementById('live-zones').innerHTML = stats.map(z => {
       const pct = z.pct;
-      // colour shifts from green → amber → red as the zone fills up
       const col = pct > 80 ? 'var(--red)' : pct > 55 ? 'var(--amber)' : 'var(--green)';
       return `<div class="card" style="padding:1rem">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.6rem">
@@ -80,8 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // analytics
-  // called once when the analytics tab is first opened, then selectively via onSimUpdate
   function renderAnalytics() {
     renderTodayStats();
     renderRevenueChart();
@@ -91,23 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
     renderQuickStats();
   }
 
-  // these update every 8s so the admin can see the impact of new bookings immediately
   function renderTodayStats() {
     const now = new Date();
-    const todayUTC = now.toISOString().slice(0, 10); // compare dates in UTC to match stored timestamps
-    const allB   = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
+    const todayUTC = now.toISOString().slice(0, 10);
+    const allB = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
     const todayB = allB.filter(b => (b.createdAt || b.start || '').slice(0, 10) === todayUTC);
-
-    // how many bookings are currently active right now (not just made today)
     const activeNow = UniPark.getBookings().filter(b => !b.expired && !b.cancelled && b.end > now.toISOString()).length;
-
     const revToday = todayB.reduce((s, b) => s + Number(b.total || 0), 0);
 
-    const zoneStats    = UniPark.getZoneStats('__admin__');
-    const totalSpots   = zoneStats.reduce((s, z) => s + z.spots, 0);
-    const occupiedNow  = zoneStats.reduce((s, z) => s + z.occupied, 0);
+    const zoneStats = UniPark.getZoneStats('__admin__');
+    const totalSpots = zoneStats.reduce((s, z) => s + z.spots, 0);
+    const occupiedNow = zoneStats.reduce((s, z) => s + z.occupied, 0);
     const occupancyPct = totalSpots > 0 ? Math.round(occupiedNow / totalSpots * 100) : 0;
-    const busiestZone  = zoneStats.reduce((a, b) => a.pct > b.pct ? a : b, zoneStats[0]);
+    const busiestZone = zoneStats.reduce((a, b) => a.pct > b.pct ? a : b, zoneStats[0]);
     const occCol = occupancyPct > 80 ? 'var(--red)' : occupancyPct > 55 ? 'var(--amber)' : 'var(--green)';
 
     document.getElementById('today-stats').innerHTML = `
@@ -133,20 +112,18 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
   }
 
-
-  // re-renders on every sim tick when the analytics panel is visible
   function renderRevenueChart() {
     const data = UniPark.getDailyRevenue(14);
     const W = 600, H = 110, PAD = 6, GAP = 4;
     const maxRev = Math.max(...data.map(d => d.revenue), 1);
-    const barW   = (W - PAD * 2 - GAP * (data.length - 1)) / data.length;
+    const barW = (W - PAD * 2 - GAP * (data.length - 1)) / data.length;
 
     const bars = data.map((d, i) => {
-      const x    = PAD + i * (barW + GAP);
+      const x = PAD + i * (barW + GAP);
       const barH = Math.max(d.revenue > 0 ? 3 : 1, (d.revenue / maxRev) * (H - PAD * 2 - 18));
-      const y    = H - PAD - 18 - barH;
-      const isToday   = i === data.length - 1;
-      const col       = isToday ? 'var(--blue)' : d.revenue > 0 ? 'var(--blue-dim)' : 'var(--surface3)';
+      const y = H - PAD - 18 - barH;
+      const isToday = i === data.length - 1;
+      const col = isToday ? 'var(--blue)' : d.revenue > 0 ? 'var(--blue-dim)' : 'var(--surface3)';
       const borderCol = isToday ? 'var(--blue-dark)' : d.revenue > 0 ? 'var(--blue)' : 'var(--border)';
       return `<g>
         <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="3"
@@ -168,16 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
       </svg>`;
   }
 
-  // peak hours
-  // bars are red when above 50% average occupancy, green when below
   function renderPeakBars() {
-    const peak  = UniPark.getPeakHours();
+    const peak = UniPark.getPeakHours();
     const shown = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-    const max   = Math.max(...shown.map(h => peak[h].avg), 0.01);
+    const max = Math.max(...shown.map(h => peak[h].avg), 0.01);
     document.getElementById('peak-chart').innerHTML = shown.map(h => {
-      const avg   = peak[h].avg;
-      const pct   = Math.round((avg / max) * 100);
-      const col   = avg > 0.5 ? 'var(--red)' : 'var(--green)';
+      const avg = peak[h].avg;
+      const pct = Math.round((avg / max) * 100);
+      const col = avg > 0.5 ? 'var(--red)' : 'var(--green)';
       const label = h === 0 ? '12am' : h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm';
       return `<div class="peak-bar-wrap">
         <div class="peak-bar" style="height:${pct}%;background:${col};min-height:3px" title="${label}: ${Math.round(avg * 100)}% avg occupancy"></div>
@@ -186,14 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // heatmap
-  // uses getUTCHours() because the occupancy history is stored with UTC timestamps
+  // uses getUTCHours() because history is stored in UTC
   function renderHeatmap() {
     const history = UniPark.getHistory();
-    const hours   = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-    const zones   = UniPark.ZONES;
+    const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+    const zones = UniPark.ZONES;
 
-    // average occupancy rate for a given zone at a given UTC hour, across all history records
     function avgOcc(zoneId, hour) {
       const recs = history.filter(h => h.zone === zoneId && new Date(h.ts).getUTCHours() === hour);
       if (!recs.length) return 0;
@@ -202,21 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const wrap = document.getElementById('heatmap');
     let html = '<div class="heatmap-grid">';
-
-    // top row: empty corner cell, then one label per hour
     html += '<div class="heatmap-label"></div>';
     hours.forEach(h => {
       const l = h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm';
       html += `<div class="heatmap-col-label">${l}</div>`;
     });
-
-    // one row per zone: zone ID label, then one coloured cell per hour
     zones.forEach(z => {
       html += `<div class="heatmap-label">${z.id}</div>`;
       hours.forEach(h => {
-        const v     = avgOcc(z.id, h);
+        const v = avgOcc(z.id, h);
         const alpha = 0.1 + v * 0.85;
-        // green = low, amber = medium, red = high occupancy
         const col = v > 0.75
           ? `rgba(240,91,91,${alpha})`
           : v > 0.5
@@ -229,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
     wrap.innerHTML = html;
   }
 
-  // zone usage
   function renderZoneUtil() {
     const data = UniPark.getZoneUtilisation();
     document.getElementById('zone-util').innerHTML = data.map(z => {
@@ -244,30 +211,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // summary data
   function renderQuickStats() {
-    const zoneUtil     = UniPark.getZoneUtilisation();
-    const peak         = UniPark.getPeakHours();
-    const history      = UniPark.getHistory();
+    const zoneUtil = UniPark.getZoneUtilisation();
+    const peak = UniPark.getPeakHours();
+    const history = UniPark.getHistory();
     const realBookings = UniPark.getBookings().filter(b => b.userId !== 'sim' && !b.cancelled);
 
-    // busiest zone by historical average utilisation
     const busiest = zoneUtil.reduce((a, b) => a.utilPct > b.utilPct ? a : b, zoneUtil[0]);
     document.getElementById('qs-busiest-zone').textContent =
       busiest ? 'Zone ' + busiest.id + ' (' + busiest.utilPct + '%)' : '—';
 
-    // peak hour
     const fmtH = h => h === 0 ? '12am' : h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm';
     const dayPeak = peak.filter(p => p.hour >= 6 && p.hour <= 22).reduce((a, b) => a.avg > b.avg ? a : b, { hour: 9, avg: 0 });
     document.getElementById('qs-peak-hour').textContent =
       fmtH(dayPeak.hour) + ' (' + Math.round(dayPeak.avg * 100) + '% avg)';
 
-    // average daily bookings
     const uniqueDays = new Set(history.map(r => r.ts.slice(0, 10))).size || 1;
     document.getElementById('qs-avg-bookings').textContent =
       Math.round(realBookings.length / uniqueDays) + ' / day';
 
-    // average booking duration in hours
     if (realBookings.length > 0) {
       const hrs = realBookings.reduce((s, b) => {
         const h = (new Date(b.end) - new Date(b.start)) / 3600000;
@@ -276,22 +238,19 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('qs-avg-duration').textContent = (hrs / realBookings.length).toFixed(1) + ' hrs';
     }
 
-    // top payment method 
     const payCounts = {};
     realBookings.forEach(b => { payCounts[b.payMethod] = (payCounts[b.payMethod] || 0) + 1; });
-    const topPay    = Object.entries(payCounts).sort((a, b) => b[1] - a[1])[0];
+    const topPay = Object.entries(payCounts).sort((a, b) => b[1] - a[1])[0];
     const payLabels = { card: 'Card', apple: 'Apple Pay' };
     document.getElementById('qs-top-pay').textContent = topPay
       ? (payLabels[topPay[0]] || topPay[0]) + ' (' + Math.round(topPay[1] / realBookings.length * 100) + '%)'
       : '—';
 
-    // revenue from the last 7 days
-    const weekAgo  = new Date(Date.now() - 7 * 86400000).toISOString();
-    const weekRev  = realBookings.filter(b => (b.createdAt || b.start) >= weekAgo).reduce((s, b) => s + Number(b.total || 0), 0);
+    const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+    const weekRev = realBookings.filter(b => (b.createdAt || b.start) >= weekAgo).reduce((s, b) => s + Number(b.total || 0), 0);
     document.getElementById('qs-revenue-week').textContent = '$' + weekRev.toFixed(2);
 
-    // busiest day of the week based on total bookings per day
-    const days      = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const dayCounts = Array(7).fill(0);
     realBookings.forEach(b => { dayCounts[new Date(b.start).getDay()]++; });
     const maxDay = dayCounts.indexOf(Math.max(...dayCounts));
@@ -299,8 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
       days[maxDay] + ' (' + dayCounts[maxDay] + ' bookings)';
   }
 
-  // bookings
-  // search is client-side — filters as the admin types, no server round-trip needed
   let bSearch = '';
   document.getElementById('booking-search').addEventListener('input', function () {
     bSearch = this.value.toLowerCase();
@@ -308,14 +265,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function renderBookings() {
-    // exclude simulation bookings and show newest first
-    const all      = UniPark.getBookings().filter(b => b.userId !== 'sim').slice().reverse();
+    const all = UniPark.getBookings().filter(b => b.userId !== 'sim').slice().reverse();
     const filtered = all.filter(b =>
       b.spotId.toLowerCase().includes(bSearch) ||
       b.userEmail.toLowerCase().includes(bSearch) ||
       b.id.toLowerCase().includes(bSearch)
     );
-    const tbody       = document.getElementById('bookings-tbody');
+    const tbody = document.getElementById('bookings-tbody');
     const recentTbody = document.getElementById('recent-bookings-tbody');
 
     if (!filtered.length) {
@@ -325,10 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const now  = new Date().toISOString();
+    const now = new Date().toISOString();
     const rows = filtered.map(b => {
-      const spot    = UniPark.getSpot(b.spotId);
-      const u       = UniPark.getUsers().find(x => x.email === b.userEmail);
+      const spot = UniPark.getSpot(b.spotId);
+      const u = UniPark.getUsers().find(x => x.email === b.userEmail);
       const expired = b.expired || b.end <= now;
       return `<tr>
         <td><span class="badge badge-blue mono">#UP-${b.id}</span></td>
@@ -345,10 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tbody.innerHTML = rows;
 
-    // the overview panel shows just the five most recent bookings — reuse the same row data
     if (recentTbody) recentTbody.innerHTML = filtered.slice(0, 5).map(b => {
-      const spot    = UniPark.getSpot(b.spotId);
-      const u       = UniPark.getUsers().find(x => x.email === b.userEmail);
+      const spot = UniPark.getSpot(b.spotId);
+      const u = UniPark.getUsers().find(x => x.email === b.userEmail);
       const expired = b.expired || b.end <= new Date().toISOString();
       return `<tr>
         <td><span class="badge badge-blue mono">#UP-${b.id}</span></td>
@@ -360,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </tr>`;
     }).join('');
 
-    // wire up cancel buttons — each asks for confirmation before calling the API
     tbody.querySelectorAll('[data-cancel]').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!confirm('Cancel this booking?')) return;
@@ -372,8 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  //users
-  // same pattern as bookings — live client-side search, re-renders on input
   let uSearch = '';
   document.getElementById('user-search').addEventListener('input', function () {
     uSearch = this.value.toLowerCase();
@@ -381,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function renderUsers() {
-    const all      = UniPark.getUsers().filter(u => u.role !== 'admin');
+    const all = UniPark.getUsers().filter(u => u.role !== 'admin');
     const filtered = all.filter(u =>
       u.name.toLowerCase().includes(uSearch) ||
       u.email.toLowerCase().includes(uSearch) ||
@@ -393,8 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     tbody.innerHTML = filtered.map(u => {
-      // pull booking history for this user to compute total spend
-      const bkgs  = UniPark.myBookings(u.email).filter(b => b.userId !== 'sim');
+      const bkgs = UniPark.myBookings(u.email).filter(b => b.userId !== 'sim');
       const spent = bkgs.reduce((a, b) => a + b.total, 0);
       return `<tr>
         <td><div style="display:flex;align-items:center;gap:9px">
@@ -410,9 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  
-  // admin can click any non-occupied spot to close or reopen it
-  let activeZone = 'A'; // which zone's grid is currently shown
+  let activeZone = 'A';
 
   function renderSpotTabs() {
     const wrap = document.getElementById('spot-zone-tabs');
@@ -430,18 +379,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderSpots() {
     const spots = UniPark.zoneSpots(activeZone);
-    // split the spots into two rows to match the physical two-row layout of the lot
     const half = Math.ceil(spots.length / 2);
     const rowA = spots.slice(0, half);
     const rowB = spots.slice(half);
 
     function row(rowSpots) {
       return rowSpots.map(s => {
-        // a spot is "booked" if there's a real user booking on it; "simOcc" if the simulation placed one
-        const booked  = !!UniPark.getBookings().find(b => !b.expired && b.end > new Date().toISOString() && b.spotId === s.id && b.userId !== 'sim');
-        const simOcc  = !!UniPark.getBookings().find(b => !b.expired && b.end > new Date().toISOString() && b.spotId === s.id && b.userId === 'sim');
-        const closed  = UniPark.isSpotClosed(s.id);
-        const st      = closed ? 'closed' : (booked || simOcc) ? 'occupied' : 'available';
+        const booked = !!UniPark.getBookings().find(b => !b.expired && b.end > new Date().toISOString() && b.spotId === s.id && b.userId !== 'sim');
+        const simOcc = !!UniPark.getBookings().find(b => !b.expired && b.end > new Date().toISOString() && b.spotId === s.id && b.userId === 'sim');
+        const closed = UniPark.isSpotClosed(s.id);
+        const st = closed ? 'closed' : (booked || simOcc) ? 'occupied' : 'available';
         return `<div class="spot ${st}" data-spot="${s.id}" title="${closed ? 'Click to reopen' : (booked || simOcc) ? 'Currently occupied' : 'Click to close'}">
           <span class="spot-id">${s.id}</span>
           <span class="spot-type">${s.type}</span>
@@ -455,10 +402,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="drive-lane"><span class="drive-lane-text">← Drive lane →</span></div>
       <div class="lot-row-label">Row 2</div><div class="spots-row">${row(rowB)}</div>`;
 
-    // clicking a non-occupied spot toggles its closed state after a confirm dialog
     document.querySelectorAll('#admin-spot-grid .spot:not(.occupied)').forEach(el => {
       el.addEventListener('click', () => {
-        const id     = el.dataset.spot;
+        const id = el.dataset.spot;
         const closed = UniPark.isSpotClosed(id);
         if (!confirm(closed ? `Reopen spot ${id}?` : `Close spot ${id} to new bookings?`)) return;
         UniPark.toggleSpotClosed(id);
@@ -469,8 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // render admin
-  // kick off the first render pass for everything that visible on load
   renderStats();
   renderLiveGrid();
   renderBookings();
