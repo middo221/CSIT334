@@ -3,29 +3,37 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>UniPark — Sign in</title>
+<!-- shared base styles -->
 <link rel="stylesheet" href="css/base.css">
+<!-- login/register page specific styles -->
 <link rel="stylesheet" href="css/auth.css">
 </head>
 <body class="auth-page">
+
+<!-- centred card wrapper -->
 <div class="auth-wrapper">
 
+  <!-- logo at the top of the card -->
   <div class="auth-logo-wrap">
     <div class="logo"><div class="logo-mark">🅿</div> UniPark</div>
-   
   </div>
 
   <div class="auth-card">
+
+    <!-- tab switcher between Sign in and Register -->
     <div class="auth-tabs">
       <button class="auth-tab active" data-tab="login">Sign in</button>
       <button class="auth-tab" data-tab="register">Register</button>
     </div>
 
+    <!-- error banner — hidden by default, shown by auth.js when something goes wrong -->
     <div id="auth-error" class="error-msg hidden"></div>
 
-    <!-- login page -->
+    <!-- SIGN IN FORM -->
     <div id="form-login" class="auth-form active">
       <div class="form-group">
         <label class="form-label">Email address</label>
+        <!-- prefilled with demo credentials so markers can log in quickly -->
         <input class="form-input" type="email" id="login-email" placeholder="you@unipark.edu.au" value="demo@unipark.edu.au" autocomplete="email">
       </div>
       <div class="form-group">
@@ -33,18 +41,20 @@
         <input class="form-input" type="password" id="login-password" placeholder="••••••••" value="password" autocomplete="current-password">
       </div>
       <button class="btn btn-primary btn-full btn-lg" id="btn-login">Sign in</button>
+      <!-- demo credentials hint shown below the button -->
       <div class="demo-hint">
         Student demo: <strong>demo@unipark.edu.au</strong> / <strong>password</strong><br>
         Admin demo: <strong>admin@unipark.edu.au</strong> / <strong>admin123</strong>
       </div>
     </div>
 
-    <!-- register page -->
+    <!-- REGISTER FORM — hidden until the user clicks the Register tab -->
     <div id="form-register" class="auth-form">
       <div class="form-group">
         <label class="form-label">Full name</label>
         <input class="form-input" type="text" id="reg-name" placeholder="Jane Smith" autocomplete="name">
       </div>
+      <!-- email and password side by side -->
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label">Email</label>
@@ -55,6 +65,7 @@
           <input class="form-input" type="password" id="reg-password" placeholder="Min. 6 chars" autocomplete="new-password">
         </div>
       </div>
+      <!-- vehicle plate and role side by side -->
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label">Vehicle plate</label>
@@ -69,6 +80,7 @@
           </select>
         </div>
       </div>
+      <!-- subscription plan picker — Basic or Premium -->
       <div class="form-group">
         <label class="form-label">Subscription plan</label>
         <div class="sub-options">
@@ -84,11 +96,14 @@
       </div>
       <button class="btn btn-primary btn-full btn-lg" id="btn-register">Create account</button>
     </div>
-  </div>
 
-  
+  </div>
 </div>
+
+<!-- toast notification container (used by store.js) -->
 <div id="toast"></div>
+
+<!-- store.js must load first so UniPark is available when auth.js runs -->
 <script src="js/store.js"></script>
 <script src="js/auth.js"></script>
 </body>

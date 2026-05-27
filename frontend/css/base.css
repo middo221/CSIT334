@@ -1,10 +1,10 @@
 /* ── UNIPARK · BASE STYLES ─────────────────────────────────────── */
 :root {
   /* Core palette */
-  --blue:       #1a6ff5;
-  --blue-dark:  #1358c8;
-  --blue-dim:   #dbe8ff;
-  --blue-light: #eef4ff;
+  --blue:       #4f46e5;
+  --blue-dark:  #3730a3;
+  --blue-dim:   #e0e7ff;
+  --blue-light: #eef2ff;
 
   --green:      #16a34a;
   --green-dim:  #dcfce7;
@@ -19,25 +19,25 @@
   --purple-dim: #ede9fe;
 
   /* Surfaces */
-  --bg:       #eef2fb;
+  --bg:       #f4f2f9;
   --white:    #ffffff;
   --surface:  #ffffff;
-  --surface2: #f4f7fd;
-  --surface3: #e8edf8;
+  --surface2: #ede9f6;
+  --surface3: #e2ddf0;
 
   /* Text */
-  --text:   #0d1e3d;
-  --muted:  #5f759e;
+  --text:   #1c1545;
+  --muted:  #6b62a0;
 
   /* Border */
-  --border: #cdd5eb;
+  --border: #d0cae8;
 
   /* Radius */
-  --radius: 12px;
+  --radius: 10px;
 
   /* Shadow */
-  --shadow-sm: 0 1px 3px rgba(15,30,70,.07);
-  --shadow:    0 4px 16px rgba(15,30,70,.10);
+  --shadow-sm: 0 1px 3px rgba(28,20,80,.07);
+  --shadow:    0 4px 16px rgba(28,20,80,.10);
 }
 
 /* ── RESET / BASE ──────────────────────────────────────────────── */
@@ -60,7 +60,7 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; }
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--blue) !important;
-  box-shadow: 0 0 0 3px rgba(26,111,245,.12);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
 }
 
 /* ── BUTTONS ───────────────────────────────────────────────────── */
@@ -84,7 +84,7 @@ input:focus, select:focus, textarea:focus {
 .btn-primary {
   background: var(--blue);
   color: white;
-  box-shadow: 0 2px 8px rgba(26,111,245,.3);
+  box-shadow: 0 2px 8px rgba(79,70,229,.3);
 }
 
 .btn-secondary {

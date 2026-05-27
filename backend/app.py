@@ -367,7 +367,7 @@ def create_booking():
     pay_method = data.get("payMethod") or data.get("pay_method") or "card"
     requested_id = (data.get("id") or "").strip().upper()
 
-    if pay_method not in {"card", "apple", "google", "sim"}:
+    if pay_method not in {"card", "apple", "sim"}:
         return error("Invalid payment method.")
 
     try:

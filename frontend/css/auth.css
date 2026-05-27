@@ -5,7 +5,7 @@ body.auth-page {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(145deg, #e8eefb 0%, #dce7f9 100%);
+  background: linear-gradient(145deg, #e8e4f8 0%, #ddd8f5 100%);
   padding: 24px 16px;
 }
 
@@ -32,7 +32,7 @@ body.auth-page {
   height: 38px;
   font-size: 18px;
   border-radius: 11px;
-  box-shadow: 0 4px 14px rgba(26,111,245,.35);
+  box-shadow: 0 4px 14px rgba(79,70,229,.35);
 }
 
 .auth-tagline {
@@ -47,7 +47,7 @@ body.auth-page {
   padding: 2rem;
   border-radius: 18px;
   border: 1.5px solid var(--border);
-  box-shadow: 0 8px 32px rgba(15,30,80,.10);
+  box-shadow: 0 8px 32px rgba(28,20,80,.10);
 }
 
 /* ── TABS ──────────────────────────────────────────────────────── */

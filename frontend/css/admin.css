@@ -270,7 +270,7 @@
 .search-input:focus {
   outline: none;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(26,111,245,.12);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
 }
 
 /* ── ADMIN SPOT GRID ───────────────────────────────────────────── */

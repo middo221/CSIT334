@@ -158,7 +158,7 @@ def seed(reset: bool = False) -> None:
             bookings.append(
                 (
                     rand_id(), spot[0], spot[1], user[0], user[1], iso(start), iso(end),
-                    round(duration * float(spot[3]), 2), random.choice(["card", "apple", "google"]),
+                    round(duration * float(spot[3]), 2), random.choice(["card", "apple"]),
                     "success", iso(start - timedelta(minutes=random.randint(2, 60))), 0, expired,
                 )
             )

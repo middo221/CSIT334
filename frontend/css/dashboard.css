@@ -23,7 +23,7 @@
 
 .zone-card:hover {
   border-color: var(--blue);
-  box-shadow: 0 4px 16px rgba(26,111,245,.12);
+  box-shadow: 0 4px 16px rgba(79,70,229,.12);
   transform: translateY(-2px);
 }
 
@@ -182,7 +182,7 @@
 
 .spot.available:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(26,111,245,.25);
+  box-shadow: 0 4px 12px rgba(79,70,229,.25);
 }
 
 .spot.occupied {
@@ -457,7 +457,7 @@
 
 .zone-card.recommended {
   border-color: var(--blue);
-  box-shadow: 0 0 0 2px rgba(26,111,245,.15);
+  box-shadow: 0 0 0 2px rgba(79,70,229,.15);
 }
 
 /* ── LOT ROW LABELS ────────────────────────────────────────────── */
