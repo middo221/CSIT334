@@ -4,33 +4,25 @@
   --blue-dark:  #3730a3;
   --blue-dim:   #e0e7ff;
   --blue-light: #eef2ff;
-
   --green:      #16a34a;
   --green-dim:  #dcfce7;
-
   --red:        #dc2626;
   --red-dim:    #fee2e2;
-
   --amber:      #d97706;
   --amber-dim:  #fef3c7;
-
   --purple:     #7c3aed;
   --purple-dim: #ede9fe;
-
   /* surfaces */
   --bg:       #f4f2f9;
   --white:    #ffffff;
   --surface:  #ffffff;
   --surface2: #ede9f6;
   --surface3: #e2ddf0;
-
   /* text */
   --text:   #1c1545;
   --muted:  #6b62a0;
-
   --border: #d0cae8;
   --radius: 10px;
-
   --shadow-sm: 0 1px 3px rgba(28,20,80,.07);
   --shadow:    0 4px 16px rgba(28,20,80,.10);
 }

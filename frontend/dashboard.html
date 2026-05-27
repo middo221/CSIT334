@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UniPark — Dashboard</title>
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>UniPark — Dashboard</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
 <header class="app-header">
-  <div class="logo"><span class="logo-mark">🅿</span> UniPark</div>
+  <div class="logo">
+    <span class="logo-mark">🅿</span> UniPark
+  </div>
   <nav class="header-nav">
     <button class="nav-link active" data-panel="overview">Overview</button>
     <button class="nav-link" data-panel="find">Find a Spot</button>
@@ -29,9 +32,23 @@
 <main class="app-main">
 
   <div class="stats-grid stats-grid-4">
-    <div class="stat-card"><div class="stat-label">Available Now</div><div class="stat-value text-green" id="stat-available">—</div><div class="stat-sub">across all zones</div><div class="stat-accent"></div></div>
-    <div class="stat-card"><div class="stat-label">Occupied</div><div class="stat-value text-red" id="stat-occupied">—</div><div class="stat-sub">across all zones</div><div class="stat-accent"></div></div>
-    <div class="stat-card"><div class="stat-label">My Bookings</div><div class="stat-value text-blue" id="stat-mine">0</div><div class="stat-sub">currently active</div></div>
+    <div class="stat-card">
+      <div class="stat-label">Available Now</div>
+      <div class="stat-value text-green" id="stat-available">—</div>
+      <div class="stat-sub">across all zones</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Occupied</div>
+      <div class="stat-value text-red" id="stat-occupied">—</div>
+      <div class="stat-sub">across all zones</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">My Bookings</div>
+      <div class="stat-value text-blue" id="stat-mine">0</div>
+      <div class="stat-sub">currently active</div>
+    </div>
   </div>
 
   <!-- overview -->
@@ -42,7 +59,9 @@
     </div>
     <div class="zones-grid" id="zones-grid"></div>
 
-    <div class="section-head"><div class="section-title">Smart recommendations</div></div>
+    <div class="section-head">
+      <div class="section-title">Smart recommendations</div>
+    </div>
     <div class="rec-card" id="rec-list"></div>
   </div>
 
@@ -57,14 +76,24 @@
     </div>
 
     <div class="lot-legend">
-      <div class="legend-item"><div class="legend-dot available"></div> Available</div>
-      <div class="legend-item"><div class="legend-dot occupied"></div> Occupied</div>
-      <div class="legend-item"><div class="legend-dot mine"></div> Your booking</div>
-      <div class="legend-item"><div class="legend-dot closed"></div> Closed</div>
+      <div class="legend-item">
+        <div class="legend-dot available"></div> Available
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot occupied"></div> Occupied
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot mine"></div> Your booking
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot closed"></div> Closed
+      </div>
     </div>
 
     <div class="zone-switcher" id="zone-switcher"></div>
-    <div class="lot-wrap"><div id="parking-grid"></div></div>
+    <div class="lot-wrap">
+      <div id="parking-grid"></div>
+    </div>
   </div>
 
   <!-- predictions -->
@@ -78,7 +107,9 @@
 
   <!-- my bookings -->
   <div class="panel hidden" id="panel-bookings">
-    <div class="section-head"><div class="section-title">My bookings</div></div>
+    <div class="section-head">
+      <div class="section-title">My bookings</div>
+    </div>
     <div id="bookings-list"></div>
   </div>
 
@@ -88,33 +119,67 @@
 <div class="modal-overlay" id="modal-booking">
   <div class="modal">
     <div class="modal-header">
-      <div><div class="modal-title">Reserve a spot</div><div class="modal-subtitle" id="modal-spot-subtitle"></div></div>
+      <div>
+        <div class="modal-title">Reserve a spot</div>
+        <div class="modal-subtitle" id="modal-spot-subtitle"></div>
+      </div>
       <button class="btn-close" data-close="modal-booking">×</button>
     </div>
     <div class="spot-preview">
-      <div><div class="spot-preview-id" id="preview-id">A1</div><div class="spot-preview-meta" id="preview-meta"></div></div>
+      <div>
+        <div class="spot-preview-id" id="preview-id">A1</div>
+        <div class="spot-preview-meta" id="preview-meta"></div>
+      </div>
     </div>
     <div class="grid-2">
-      <div class="form-group" style="margin:0"><label class="form-label">From</label><input class="form-input" type="datetime-local" id="book-start"></div>
-      <div class="form-group" style="margin:0"><label class="form-label">Until</label><input class="form-input" type="datetime-local" id="book-end"></div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">From</label>
+        <input class="form-input" type="datetime-local" id="book-start">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">Until</label>
+        <input class="form-input" type="datetime-local" id="book-end">
+      </div>
     </div>
     <!-- price updates as the user changes times -->
     <div class="price-breakdown">
-      <div class="pb-row"><span class="pb-label">Duration</span><span class="pb-value" id="pb-dur">—</span></div>
-      <div class="pb-row"><span class="pb-label">Rate</span><span class="pb-value" id="pb-rate">—</span></div>
-      <div class="pb-row total"><span class="pb-label">Total</span><span class="pb-value" id="pb-total">—</span></div>
+      <div class="pb-row">
+        <span class="pb-label">Duration</span>
+        <span class="pb-value" id="pb-dur">—</span>
+      </div>
+      <div class="pb-row">
+        <span class="pb-label">Rate</span>
+        <span class="pb-value" id="pb-rate">—</span>
+      </div>
+      <div class="pb-row total">
+        <span class="pb-label">Total</span>
+        <span class="pb-value" id="pb-total">—</span>
+      </div>
     </div>
     <div class="pay-section">
       <div class="pay-label">Payment method</div>
       <div class="pay-methods">
-        <div class="pay-opt active" data-pay="card"><span class="pay-opt-icon"></span>Card</div>
-        <div class="pay-opt" data-pay="apple"><span class="pay-opt-icon"></span>Apple Pay</div>
+        <div class="pay-opt active" data-pay="card">
+          <span class="pay-opt-icon"></span>Card
+        </div>
+        <div class="pay-opt" data-pay="apple">
+          <span class="pay-opt-icon"></span>Apple Pay
+        </div>
       </div>
       <div id="card-fields">
-        <div class="form-group" style="margin:0 0 10px"><label class="form-label">Card number</label><input class="form-input" type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+        <div class="form-group" style="margin:0 0 10px">
+          <label class="form-label">Card number</label>
+          <input class="form-input" type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+        </div>
         <div class="card-row-2">
-          <div class="form-group" style="margin:0"><label class="form-label">Expiry</label><input class="form-input" type="text" id="card-expiry" placeholder="MM / YY" maxlength="7"></div>
-          <div class="form-group" style="margin:0"><label class="form-label">CVV</label><input class="form-input" type="text" placeholder="123" maxlength="3"></div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Expiry</label>
+            <input class="form-input" type="text" id="card-expiry" placeholder="MM / YY" maxlength="7">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">CVV</label>
+            <input class="form-input" type="text" placeholder="123" maxlength="3">
+          </div>
         </div>
       </div>
     </div>

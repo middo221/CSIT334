@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UniPark — Admin</title>
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>UniPark — Admin</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
 <header class="app-header">
-  <div class="logo"><div class="logo-mark" style="background:var(--admin)">🅿</div> UniPark</div>
+  <div class="logo">
+    <div class="logo-mark" style="background:var(--admin)">🅿</div>
+    UniPark
+  </div>
   <div class="admin-badge">Admin</div>
   <nav class="header-nav">
     <button class="nav-link active" data-panel="overview">Overview</button>
-    <button class="nav-link" data-panel="analytics"> Analytics</button>
+    <button class="nav-link" data-panel="analytics">Analytics</button>
     <button class="nav-link" data-panel="bookings">Bookings</button>
     <button class="nav-link" data-panel="users">Users</button>
-    <button class="nav-link" data-panel="spots"> Spots</button>
+    <button class="nav-link" data-panel="spots">Spots</button>
   </nav>
   <div class="header-right">
     <div class="user-pill">
@@ -31,11 +35,36 @@
 <main class="app-main">
 
   <div class="stats-grid stats-grid-5">
-    <div class="stat-card"><div class="stat-label">Total Bookings</div><div class="stat-value text-amber" id="stat-bookings">—</div><div class="stat-sub">all time</div><div class="stat-accent"></div></div>
-    <div class="stat-card"><div class="stat-label">Registered Users</div><div class="stat-value text-blue" id="stat-users">—</div><div class="stat-sub">accounts</div><div class="stat-accent"></div></div>
-    <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value text-green" id="stat-revenue">—</div><div class="stat-sub">all time</div><div class="stat-accent"></div></div>
-    <div class="stat-card"><div class="stat-label">Active Now</div><div class="stat-value text-green" id="stat-active">—</div><div class="stat-sub">live bookings</div><div class="stat-accent"></div></div>
-    <div class="stat-card"><div class="stat-label">Total Spots</div><div class="stat-value" id="stat-spots">—</div><div class="stat-sub">across all zones</div><div class="stat-accent"></div></div>
+    <div class="stat-card">
+      <div class="stat-label">Total Bookings</div>
+      <div class="stat-value text-amber" id="stat-bookings">—</div>
+      <div class="stat-sub">all time</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Registered Users</div>
+      <div class="stat-value text-blue" id="stat-users">—</div>
+      <div class="stat-sub">accounts</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value text-green" id="stat-revenue">—</div>
+      <div class="stat-sub">all time</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Now</div>
+      <div class="stat-value text-green" id="stat-active">—</div>
+      <div class="stat-sub">live bookings</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Spots</div>
+      <div class="stat-value" id="stat-spots">—</div>
+      <div class="stat-sub">across all zones</div>
+      <div class="stat-accent"></div>
+    </div>
   </div>
 
   <!-- overview -->
@@ -43,14 +72,28 @@
     <div class="section-head">
       <div class="section-title">Live zone occupancy</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.75rem" id="live-zones"></div>
+    <div id="live-zones" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.75rem"></div>
 
-    <div class="section-head"><div class="section-title">Recent bookings</div>
+    <div class="section-head">
+      <div class="section-title">Recent bookings</div>
       <button class="btn btn-ghost btn-sm" onclick="switchPanel('bookings')">View all →</button>
     </div>
     <div class="table-wrap">
-      <table><thead><tr><th>Ref</th><th>Spot</th><th>User</th><th>Time</th><th>Amount</th><th>Status</th></tr></thead>
-      <tbody id="recent-bookings-tbody"><tr><td colspan="6" class="table-empty">Loading…</td></tr></tbody></table>
+      <table>
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Spot</th>
+            <th>User</th>
+            <th>Time</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="recent-bookings-tbody">
+          <tr><td colspan="6" class="table-empty">Loading…</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -84,13 +127,42 @@
       <div class="chart-card">
         <div class="chart-title">Statistics</div>
         <div id="quick-stats" style="padding-top:.25rem">
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Busiest zone</span><span class="mono" style="font-size:12px" id="qs-busiest-zone">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Peak hour</span><span class="mono" style="font-size:12px" id="qs-peak-hour">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Average daily bookings</span><span class="mono" style="font-size:12px" id="qs-avg-bookings">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Average booking duration</span><span class="mono" style="font-size:12px" id="qs-avg-duration">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Top payment method</span><span class="mono" style="font-size:12px" id="qs-top-pay">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Revenue this week</span><span class="mono" style="font-size:12px" id="qs-revenue-week">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px"><span style="color:var(--muted)">Busiest day</span><span class="mono" style="font-size:12px" id="qs-busiest-day">—</span></div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--muted)">Busiest zone</span>
+            <span class="mono" style="font-size:12px" id="qs-busiest-zone">—</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--muted)">Peak hour</span>
+            <span class="mono" style="font-size:12px" id="qs-peak-hour">—</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--muted)">Average daily bookings</span>
+            <span class="mono" style="font-size:12px" id="qs-avg-bookings">—</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--muted)">Average booking duration</span>
+            <span class="mono" style="font-size:12px" id="qs-avg-duration">—</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--muted)">Top payment method</span>
+            <span class="mono" style="font-size:12px" id="qs-top-pay">—</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--muted)">Revenue this week</span>
+            <span class="mono" style="font-size:12px" id="qs-revenue-week">—</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px">
+            <span style="color:var(--muted)">Busiest day</span>
+            <span class="mono" style="font-size:12px" id="qs-busiest-day">—</span>
+          </div>
+
         </div>
       </div>
     </div>
@@ -108,8 +180,21 @@
       <input class="search-input" type="text" id="booking-search" placeholder="Search spot, user, ref…">
     </div>
     <div class="table-wrap">
-      <table><thead><tr><th>Ref</th><th>Spot</th><th>User</th><th>Time</th><th>Amount</th><th>Status</th></tr></thead>
-      <tbody id="bookings-tbody"><tr><td colspan="6" class="table-empty">Loading…</td></tr></tbody></table>
+      <table>
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Spot</th>
+            <th>User</th>
+            <th>Time</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="bookings-tbody">
+          <tr><td colspan="6" class="table-empty">Loading…</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -120,8 +205,21 @@
       <input class="search-input" type="text" id="user-search" placeholder="Search name, email, plate…">
     </div>
     <div class="table-wrap">
-      <table><thead><tr><th>User</th><th>Plate</th><th>Role</th><th>Subscription</th><th>Bookings</th><th>Spent</th></tr></thead>
-      <tbody id="users-tbody"><tr><td colspan="6" class="table-empty">Loading…</td></tr></tbody></table>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Plate</th>
+            <th>Role</th>
+            <th>Subscription</th>
+            <th>Bookings</th>
+            <th>Spent</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr><td colspan="6" class="table-empty">Loading…</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -132,12 +230,20 @@
       <span style="font-size:12px;color:var(--muted)"></span>
     </div>
     <div class="lot-legend">
-      <div class="legend-item"><div class="legend-dot available"></div> Available</div>
-      <div class="legend-item"><div class="legend-dot occupied"></div> Occupied</div>
-      <div class="legend-item"><div class="legend-dot closed"></div> Closed by admin</div>
+      <div class="legend-item">
+        <div class="legend-dot available"></div> Available
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot occupied"></div> Occupied
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot closed"></div> Closed by admin
+      </div>
     </div>
     <div class="zone-switcher" id="spot-zone-tabs" style="margin-bottom:1.25rem;flex-wrap:wrap"></div>
-    <div class="admin-grid-wrap"><div id="admin-spot-grid"></div></div>
+    <div class="admin-grid-wrap">
+      <div id="admin-spot-grid"></div>
+    </div>
   </div>
 
 </main>
@@ -149,12 +255,12 @@
 <script src="js/admin.js"></script>
 
 <script>
-function switchPanel(name){
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+function switchPanel(name) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   document.querySelector(`[data-panel="${name}"]`).classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));
-  document.getElementById('panel-'+name).classList.remove('hidden');
-  const evt=new MouseEvent('click');
+  document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('panel-' + name).classList.remove('hidden');
+  const evt = new MouseEvent('click');
   document.querySelector(`[data-panel="${name}"]`).dispatchEvent(evt);
 }
 </script>
